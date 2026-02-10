@@ -1,0 +1,39 @@
+
+# --- Python Base ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# --- Environments (uv & venv) ---
+.venv/
+env/
+venv/
+ENV/
+# Note: Do NOT ignore pyproject.toml or uv.lock
+
+# --- FastAPI / Environment Secrets ---
+.env
+.env.local
+.env.*.local
+
+# --- Build & Distribution ---
+dist/
+build/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Testing & Linting ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
