@@ -1,0 +1,59 @@
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+}
+
+.content h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #000;
+}
+
+.description {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.duration {
+    color: #777;
+}
+
+.price {
+    font-weight: 700;
+    color: #000;
+}
+
+.button {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #000;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button:hover {
+    background: #222;
+}

@@ -1,0 +1,40 @@
+.formGroup {
+ display: flex;
+ flex-direction: column;
+}
+
+.formGroup input {
+ padding: 14px;
+ font-size: 0.95rem;
+ border-radius: 10px;
+ border: 1px solid #ccc;
+ outline: none;
+ transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+
+
+
+.formGroup input:focus,
+select:focus,
+textarea:focus {
+ border-color: #000;
+}
+
+
+
+label {
+ font-size: 0.75rem;
+ font-weight: 600;
+ margin-bottom: 6px;
+ color: #333;
+ letter-spacing: 0.05em;
+ text-transform: uppercase;
+}
+input.error {
+ border: 2px solid red;
+}
+input.error:focus {
+ outline: none;
+ border-color: red;
+ box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
+}
