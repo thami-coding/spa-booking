@@ -1,0 +1,15 @@
+.summaryItem {
+ display: flex;
+ justify-content: space-between;
+ margin-bottom: 14px;
+ font-size: 14px;
+}
+
+.summaryItem span {
+ color: #777;
+}
+
+.summaryItem strong {
+ color: #000;
+ font-weight: 600;
+}
