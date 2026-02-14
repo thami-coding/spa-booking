@@ -1,0 +1,91 @@
+.container {
+  max-width: 500px;
+  min-width: 500px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  
+}
+
+.top{
+   display: grid;
+   height: 100vh;
+   place-items: center;
+}
+
+.title {
+  margin-bottom: 25px;
+  font-size: 22px;
+  text-align: center;
+  color: #000;
+  text-decoration: underline;
+}
+
+/* .summaryItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+
+.summaryItem span {
+  color: #777;
+}
+
+.summaryItem strong {
+  color: #000;
+  font-weight: 600;
+} */
+
+.notes {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.notes span {
+  display: block;
+  margin-bottom: 5px;
+  color: #777;
+}
+
+.notes p {
+  background: #f6f6f6;
+  padding: 10px;
+  border-radius: 8px;
+  color: #000;
+}
+
+/* .divider {
+  height: 1px;
+  background: #ddd;
+  margin: 25px 0;
+} */
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.priceRow strong {
+  font-weight: 700;
+}
+
+.payButton {
+  width: 100%;
+  padding: 14px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.payButton:hover {
+  background: #222;
+}
