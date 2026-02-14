@@ -1,0 +1,88 @@
+.container {
+ min-height: 100vh;
+ background: #000;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ padding: 40px;
+ font-family: "Inter", sans-serif;
+}
+
+.card {
+ background: #111;
+ width: 100%;
+ max-width: 900px;
+ border-radius: 16px;
+ padding: 40px;
+ box-shadow: 0 10px 40px rgba(255, 255, 255, 0.05);
+ border: 1px solid #222;
+ color: #fff;
+}
+
+.header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 40px;
+}
+
+.header h1 {
+ font-size: 24px;
+ font-weight: 600;
+ letter-spacing: 1px;
+}
+
+.badge {
+ background: #fff;
+ color: #000;
+ padding: 6px 14px;
+ border-radius: 50px;
+ font-size: 12px;
+ font-weight: 600;
+}
+
+.grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+ gap: 25px;
+}
+
+.item {
+ background: #000;
+ padding: 20px;
+ border-radius: 12px;
+ border: 1px solid #222;
+ transition: all 0.3s ease;
+}
+
+.item:hover {
+ border: 1px solid #fff;
+ transform: translateY(-3px);
+}
+
+.item span {
+ font-size: 12px;
+ color: #aaa;
+ letter-spacing: 1px;
+ text-transform: uppercase;
+}
+
+.item p {
+ margin-top: 8px;
+ font-size: 16px;
+ font-weight: 500;
+}
+
+.fullWidth {
+ grid-column: span 2;
+}
+
+@media (max-width: 600px) {
+ .fullWidth {
+   grid-column: span 1;
+ }
+
+ .card {
+   padding: 25px;
+ }
+}
