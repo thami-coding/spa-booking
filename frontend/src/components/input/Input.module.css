@@ -12,15 +12,11 @@
  transition: border 0.25s ease, box-shadow 0.25s ease;
 }
 
-
-
 .formGroup input:focus,
 select:focus,
 textarea:focus {
  border-color: #000;
 }
-
-
 
 label {
  font-size: 0.75rem;
@@ -30,11 +26,19 @@ label {
  letter-spacing: 0.05em;
  text-transform: uppercase;
 }
+
 input.error {
- border: 2px solid red;
+ border: 2px solid rgba(255, 4, 4, 0.781);
 }
+
+span.errorMessage {
+ color: rgba(255, 4, 4, 0.781);
+ padding-left: 0.4rem;
+ margin-top: 0.2rem;
+ font-size: 0.8rem;
+}
+
 input.error:focus {
  outline: none;
- border-color: red;
- box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
+ border-color: rgba(255, 4, 4, 0.781);
 }
