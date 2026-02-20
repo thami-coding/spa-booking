@@ -1,4 +1,9 @@
+import useSWR from "swr";
 import styles from "./dashboard.module.css";
+import { useParams } from "react-router";
+import Spinner from "../../components/spinner/Spinner";
+import { getBooking } from "../../api/bookings";
+import { format, parse, parseISO } from "date-fns";
 
 const booking = {
   date: "2026-02-12",
@@ -12,23 +17,44 @@ const booking = {
 };
 
 const Dashboard = () => {
+  const params = useParams();
+  const bookingId = params.id;
+  const { isLoading, error, data } = useSWR(
+    `/bookings/${bookingId}`,
+    getBooking,
+  );
+
+  if (isLoading)
+    return (
+      <div className={styles.spinnerContainer}>
+        <Spinner size={70} />
+      </div>
+    );
+
+  if (error) return <div>failed to load</div>;
+  const { booking } = data;
+  const [date, time] = booking.appointment_at.split("T");
+  const bookedDate = format(parseISO(date), "EEEE, MMMM d, yyyy");
+  const dateObj = parse(time, "HH:mm:ss", new Date());
+  const bookedTime = format(dateObj, "h:mm a");
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <h1>Admin Dashboard</h1>
+          <h1>Booking Details</h1>
           <span className={styles.badge}>New Booking</span>
         </div>
 
         <div className={styles.grid}>
           <div className={styles.item}>
             <span>Date</span>
-            <p>{booking.date}</p>
+            <p>{bookedDate}</p>
           </div>
 
           <div className={styles.item}>
             <span>Time</span>
-            <p>{booking.time}</p>
+            <p>{bookedTime}</p>
           </div>
 
           <div className={styles.item}>
@@ -38,7 +64,7 @@ const Dashboard = () => {
 
           <div className={styles.item}>
             <span>Full Name</span>
-            <p>{booking.fullName || "Not Provided"}</p>
+            <p>{booking.full_name || "Not Provided"}</p>
           </div>
 
           <div className={styles.item}>
