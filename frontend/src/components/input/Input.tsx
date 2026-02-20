@@ -1,38 +1,51 @@
 import type { Inputs } from "../../types/types";
 import styles from "./Input.module.css";
-import { type FieldError, type UseFormRegister } from "react-hook-form";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 type InputProps = {
   register: UseFormRegister<Inputs>;
   labelText: string;
   defaultValue: string;
-  value:
-    | "fullName"
+  name:
+    | "full_name"
     | "email"
     | "phone"
     | "service"
-    | "date"
-    | "time"
+    | "booked_date"
+    | "booked_time"
     | "guests"
-    | "requests";
-  error: FieldError | undefined
+    | "request";
+  value: string;
+  errors: FieldErrors<Inputs>;
 };
 export default function Input({
-  defaultValue,
   labelText,
   value,
+  name,
   register,
-  error
+  errors,
 }: InputProps) {
+  
+  const error = errors[name];
+  const validation = name === "phone" ? { minLength: 10, maxLength: 10 } : {};
+  const errorType = ["minLength", "maxLength"];
 
   return (
     <div className={styles.formGroup}>
-      <label>{labelText}</label>
+      <label htmlFor={name}>{labelText}</label>
       <input
-      className={error && styles.error}
-        placeholder={defaultValue}
-        {...register(value, { required: true })}
+        id={name}
+        type={name === "email" ? "email" : "text"}
+        className={error && styles.error}
+        defaultValue={value}
+        {...register(name, { required: true, ...validation })}
       />
+      <span className={styles.errorMessage}>
+        {errorType.includes(errors.phone?.type ?? "") &&
+          name === "phone" &&
+          "Invalid phone number"}
+        {errors[name]?.type === "required" && `${name} is required`}
+      </span>
     </div>
   );
 }
