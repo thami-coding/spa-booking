@@ -6,10 +6,11 @@
 }
 
 .summaryItem span {
- color: #777;
+ color: #776e6ece;
+ /* color: #777; */
 }
 
 .summaryItem strong {
- color: #000;
+ color: #000000cb;
  font-weight: 600;
 }
