@@ -18,7 +18,11 @@
  border: 1px solid #222;
  color: #fff;
 }
-
+.spinnerContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;}
 .header {
  display: flex;
  justify-content: space-between;
