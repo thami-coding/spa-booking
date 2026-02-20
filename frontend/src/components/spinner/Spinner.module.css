@@ -1,0 +1,24 @@
+.wrap {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.spinner {
+ box-sizing: border-box;
+ border-radius: 50%;
+ border: 3px solid #3a3b3bf8;
+ /* light gray */
+ border-top-color: #d6d4d4;
+ /* white "highlight" */
+ animation: spin 0.8s linear infinite;
+
+ /* optional: helps on dark backgrounds */
+ /* filter: drop-shadow(0 0 0 rgba(0,0,0,0.2)); */
+}
+
+@keyframes spin {
+ to {
+  transform: rotate(360deg);
+ }
+}
