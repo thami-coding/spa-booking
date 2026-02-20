@@ -1,42 +1,23 @@
 .container {
-  max-width: 500px;
-  min-width: 500px;
+  width: min(90%, 500px);
   background: #ffffff;
   padding: 30px;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  
 }
 
-.top{
-   display: grid;
-   height: 100vh;
-   place-items: center;
+.top {
+  display: grid;
+  height: 100vh;
+  place-items: center;
 }
 
 .title {
-  margin-bottom: 25px;
+  margin-bottom: 3rem;
   font-size: 22px;
   text-align: center;
-  color: #000;
-  text-decoration: underline;
+  color: #000000c4;
 }
-
-/* .summaryItem {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  font-size: 14px;
-}
-
-.summaryItem span {
-  color: #777;
-}
-
-.summaryItem strong {
-  color: #000;
-  font-weight: 600;
-} */
 
 .notes {
   margin-top: 15px;
@@ -56,12 +37,6 @@
   color: #000;
 }
 
-/* .divider {
-  height: 1px;
-  background: #ddd;
-  margin: 25px 0;
-} */
-
 .priceRow {
   display: flex;
   justify-content: space-between;
@@ -76,16 +51,36 @@
 .payButton {
   width: 100%;
   padding: 14px;
-  background: #000;
+  background: #000000e1;
   color: #fff;
   border: none;
   border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: 0.3s ease;
 }
 
-.payButton:hover {
-  background: #222;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.payButton:hover:not(:disabled) {
+  color: rgb(72, 240, 142);
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.spinnerContainer {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+
 }
