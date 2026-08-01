@@ -4,21 +4,26 @@ from pydantic import EmailStr, BeforeValidator
 from typing import Optional, Annotated
 from datetime import date, time
 from models.service import Service
+from pydantic.alias_generators import to_camel
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
 
 class Booking(BaseModel):
-    id: Optional[PyObjectId] = Field(default=None,alias="_id")
+    id: Optional[PyObjectId] = Field(default=None, alias="_id")
     booked_date: date = Field(...)
     booked_time: time = Field(...)
-    full_name: str = Field(..., min_length=5)
+    name: str = Field(..., min_length=5)
     service_id: str = Field(...)
     email: EmailStr = Field(...)
     phone: str = Field(..., min_length=10, max_length=10)
-    guests:int = Field(...,gt=0)
+    guests: int = Field(..., gt=0)
     request: Optional[str] = ""
-    model_config = ConfigDict(populate_by_name=True)
+
+    model_config = {
+        "alias_generator": to_camel,
+        "populate_by_name": True,
+    }
 
     @field_validator("booked_date")
     @classmethod

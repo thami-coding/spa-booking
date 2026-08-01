@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response,status
 from fastapi import HTTPException, Body, Request, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from models.user import User
 from schemas.auth import UserReg
 from core.security import AuthHandler
 from schemas.auth import AuthResponse
@@ -38,7 +40,7 @@ async def register(request: Request, newUser: UserReg = Body(...)):
     user = await request.app.state.db.users.find_one(
         {"_id": result.inserted_id}, {"role": 1, "_id": 1}
     )
-
+    
     return user
 
 
@@ -48,6 +50,8 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
     email = document["email"]
 
     user = await request.app.state.db.users.find_one({"email": email})
+    user_model = User(**user)
+    user_clean = jsonable_encoder(user_model, by_alias=False)
 
     if (user is None) or (
         not auth_handler.verify_password(loginUser.password, user["password"])
@@ -55,6 +59,25 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
     token = auth_handler.encode_token(str(user["_id"]), user["role"])
-    response = JSONResponse(content={"access_token": token})
 
+    response = JSONResponse(content={"access_token": token, "user": user_clean})
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,  
+        secure=False,    
+        samesite="lax",
+    )
+    return response
+
+@router.post("/logout", response_description="Logout user")
+async def logout(request: Request):
+    response = Response(status_code=status.HTTP_204_NO_CONTENT)
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,  
+        secure=False,    
+        samesite="lax",
+    )
+    
     return response

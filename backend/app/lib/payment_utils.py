@@ -24,7 +24,6 @@ async def generatePaymentIdentifier(pfParamString):
         response = await client.post(url, content=pfParamString, headers=headers)
 
     try:
-        print("Here Here Here Here")
         # print(f"Status Code: {response.status_code}")
         print(f"Response Text: {response.text}")
         responseJson = response.json()

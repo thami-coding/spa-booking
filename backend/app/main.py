@@ -8,6 +8,7 @@ from config import BaseConfig
 from pymongo import AsyncMongoClient
 from routers.services import router as service_router
 from routers.payment import router as payment_router
+
 settings = BaseConfig()
 
 
@@ -35,6 +36,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 origins = ["*"]
+# origins = ["https://d1f2-168-210-105-91.ngrok-free.app","http://localhost:8000"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

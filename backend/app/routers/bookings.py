@@ -58,7 +58,7 @@ async def create_booking(
     created_booking = await request.app.state.db.bookings.find_one(
         {"_id": result.inserted_id}
     )
-
+    print(create_booking)
     return BookingResponse(booking=created_booking)
 
 
@@ -100,7 +100,6 @@ async def update_booking_payment(request: Request, id: str = Path(...)):
     )
 
     booking = await request.app.state.db.bookings.find_one({"_id": ObjectId(id)})
-    print(booking)
 
     return BookingResponse(booking=booking)
 

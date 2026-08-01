@@ -5,4 +5,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class BaseConfig(BaseSettings):
     DB_URL: Optional[str] = None
     DB_NAME: Optional[str] = None
+    JWT_SECRET: Optional[str] = None
+    PAYFAST_MERCHANT_ID: Optional[str] = None
+    PAYFAST_MERCHANT_KEY: Optional[str] = None
+    PAYFAST_PASSPHRASE: Optional[str] = None
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")

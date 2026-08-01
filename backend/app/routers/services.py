@@ -7,9 +7,11 @@ router = APIRouter()
 
 @router.get("", response_model=ServicesResponse, response_model_by_alias=False)
 async def get_services(request: Request):
-    cursor = request.app.state.db.services.find({})
+    cursor = request.app.state.db.services.find()
     services = []
+    print(cursor)
     async for doc in cursor:
+        print(doc)
         services.append(doc)
     return ServicesResponse(services=services)
 
