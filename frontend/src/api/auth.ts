@@ -1,15 +1,16 @@
-import type { AuthData } from "../types/types";
+import type { LoginData, SignupData } from "../types/types";
 import { api } from "./api";
 
-export async function login(url, { arg }: { arg: AuthData }) {
+export const login = async (url: string, { arg }: { arg: LoginData }) => {
   const res = await api.post(url, arg);
-
-  sessionStorage.setItem("access_token", res.data.access_token);
   return res.data;
-}
+};
 
-export async function signup(email, password, username) {
-  const res = await api.post("/register", { email, password, username });
+export const signup = async (url: string, { arg }: { arg: SignupData }) => {
+  const res = await api.post(url, arg);
+  return res.data;
+};
 
-  return res.data.access_token;
-}
+export const logout = async (url: string) => {
+  await api.post(url);
+};

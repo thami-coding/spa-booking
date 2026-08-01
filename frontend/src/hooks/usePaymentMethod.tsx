@@ -17,7 +17,7 @@ export const usePaymentModal = ({
 }: PaymentModalArgs) => {
   const { showSwalSuccess, showSwalError } = useAlert();
   const { trigger } = useSWRMutation("/bookings", updateBooking);
-  const payment = useSWRMutation("/payment", generatePaymentId);
+  const pay = useSWRMutation("/payment", generatePaymentId);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -33,11 +33,11 @@ export const usePaymentModal = ({
 
   const handlePayment = async () => {
     setIsLoading(true);
-    const { paymentIdentifier } = await payment.trigger({ email, service_id });
-    if (window.payfast_do_onsite_payment) {
-      window.payfast_do_onsite_payment(
+    const { paymentIdentifier } = await pay.trigger({ email, service_id });
+    if ((window as any).payfast_do_onsite_payment) {
+      (window as any).payfast_do_onsite_payment(
         { uuid: paymentIdentifier },
-        function (result) {
+        function (result: boolean) {
           if (result === true) {
             trigger(bookingId);
             showSwalSuccess("Appointment Booked");

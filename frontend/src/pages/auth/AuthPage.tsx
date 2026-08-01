@@ -1,35 +1,60 @@
-import useSWRMutation from "swr/mutation";
 import styles from "./Auth.module.css";
 import { Link, useNavigate } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { login } from "../../api/auth";
 import Spinner from "../../components/spinner/Spinner";
-import type { AuthData } from "../../types/types";
+import type { ApiErrorPayload, SignupData } from "../../types/types";
+import type { AxiosError } from "axios";
+import { mutate } from "swr";
+import { useLogin, useSignup } from "../../hooks/authHooks";
 
 type AuthProps = {
   mode: "login" | "signup";
 };
 const AuthPage = ({ mode }: AuthProps) => {
-  const { trigger, isMutating } = useSWRMutation("/auth/login", login);
   const navigate = useNavigate();
+  const {
+    trigger: login,
+    isMutating: isSignupLoading,
+    error: signupError,
+  } = useLogin();
+
+  const {
+    trigger: signup,
+    isMutating: isLoginLoading,
+    error: loginError,
+  } = useSignup();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<AuthData>();
+   // formState: { errors }, //TOD: use these form errors for client side validation
+  } = useForm<SignupData>();
 
   const isLogin = mode === "login";
-  const onSubmit: SubmitHandler<AuthData> = async (data) => {
+
+  const err = (isLogin ? loginError : signupError) as AxiosError<ApiErrorPayload>;
+
+  const onSubmit: SubmitHandler<SignupData> = async (data) => {
+    console.log(isLogin);
 
     if (isLogin) {
-      const { name, confirmPassword, ...rest } = data;
-      const result = await trigger(rest);
-      console.log(result);
+      const { name, confirmPassword, ...loginCredentials } = data;
+      const userResponse = await login(loginCredentials);
+
+      await mutate("/users/me", userResponse, { revalidate: false });
+      navigate("/book", { replace: true });
     } else {
-      trigger(data);
+      await signup(data);
+      navigate("/login", { replace: true });
     }
-    navigate("/");
   };
+
+  const isLoading = isLoginLoading || isSignupLoading;
+  const errDetails = err && err?.response?.data?.detail;
+  const errorMsg =
+    typeof errDetails === "string"
+      ? errDetails
+      : Array.isArray(errDetails) && errDetails[0].msg;
 
   return (
     <div className={styles.container}>
@@ -52,6 +77,7 @@ const AuthPage = ({ mode }: AuthProps) => {
           <input type="password" {...register("password")} required />
           <label>Password</label>
         </div>
+        {err && <div className={styles.error}>{errorMsg}</div>}
         {!isLogin && (
           <div className={styles.inputGroup}>
             <input type="password" {...register("confirmPassword")} required />
@@ -60,13 +86,13 @@ const AuthPage = ({ mode }: AuthProps) => {
         )}
 
         <button
-          disabled={isMutating}
+          disabled={isLoading}
           type="submit"
-          className={`${styles.button} ${isMutating && styles.disabled}`}
+          className={`${styles.button} ${isLoading && styles.disabled}`}
         >
-          {isMutating ? (
+          {isLoading ? (
             <>
-              <Spinner size={15} /> {" "} Loading
+              <Spinner size={15} /> Loading
             </>
           ) : isLogin ? (
             "Sign In"

@@ -13,8 +13,6 @@ export default function CheckoutPage() {
     `/bookings/${bookingId}`,
     getBooking,
   );
-  console.log("log", data?.booking);
-
   const service_id = data?.booking.service_id;
   const email = data?.booking.email;
   const { handlePayment, isLoading } = usePaymentModal({
@@ -33,7 +31,7 @@ export default function CheckoutPage() {
         <div className={styles.top}>
           <div className={styles.container}>
             <h2 className={styles.title}>Booking Summary</h2>
-            <BookingSummary data={data} />
+            <BookingSummary bookingDetails={data?.booking} />
             <form>
               <button
                 type="button"

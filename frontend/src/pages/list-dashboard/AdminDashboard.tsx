@@ -1,21 +1,17 @@
-import useSWR from "swr";
 import { Link, useSearchParams } from "react-router";
 import { format, parseISO, parse, isToday } from "date-fns";
-import { getAllBookings } from "../../api/bookings";
 import styles from "./AdminDashboard.module.css";
 import Pagination from "../../components/pagination/Pagination";
 import Spinner from "../../components/spinner/Spinner";
 import { useState } from "react";
+import { useAllBookings } from "../../hooks/bookingHooks";
 
 const AdminDashboard = () => {
   const [pageIndex, setPageIndex] = useState(1);
-  const [searchParams, setSearchParams] = useSearchParams({
+  const [_searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
-  const { data, error, isLoading } = useSWR(
-    `/bookings?page=${pageIndex}`,
-    getAllBookings,
-  );
+  const { isLoading, error, data } = useAllBookings(pageIndex);
 
   if (isLoading)
     return (
@@ -38,7 +34,7 @@ const AdminDashboard = () => {
             <span>Time</span>
           </div>
 
-          {data.bookings.map((booking) => {
+          {data?.bookings.map((booking) => {
             const [date, time] = booking.appointment_at.split("T");
             const bookedDate = format(parseISO(date), "EEEE, MMMM d, yyyy");
             const dateObj = parse(time, "HH:mm:ss", new Date());
@@ -51,7 +47,7 @@ const AdminDashboard = () => {
                 key={booking.id}
                 className={`${styles.row} ${isTodayDate && styles.active}`}
               >
-                <span>{booking.full_name}</span>
+                <span>{booking.name}</span>
                 <span>{booking.phone}</span>
                 <span>{bookedDate}</span>
                 <span>{bookedTime}</span>
@@ -62,7 +58,7 @@ const AdminDashboard = () => {
 
         <Pagination
           page={pageIndex}
-          totalPages={data.totalPages}
+          totalPages={data?.totalPages}
           setPageIndex={setPageIndex}
           setSearchParams={setSearchParams}
         />

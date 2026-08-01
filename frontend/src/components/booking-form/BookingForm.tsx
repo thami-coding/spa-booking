@@ -1,17 +1,16 @@
 import useSWR from "swr";
 import { useNavigate } from "react-router";
-import useSWRMutation from "swr/mutation";
-
 import styles from "./BookingForm.module.css";
 import Input from "../input/Input";
 import Spinner from "../spinner/Spinner";
-import { getUser } from "../../api/user";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { FormFieldsData, Inputs } from "../../types/types";
-import { createBooking, getBookedDates, getServices } from "../../api/bookings";
+import type { FormBookingDetails, FormFieldsData } from "../../types/types";
+import { getServices } from "../../api/bookings";
 import { format, parse } from "date-fns";
 import { useAlert } from "../../hooks/useAlert";
 import { useEffect } from "react";
+import { useUser } from "../../hooks/authHooks";
+import { useBookedDates, useCreateBooking } from "../../hooks/bookingHooks";
 
 export default function BookingForm() {
   const navigate = useNavigate();
@@ -21,28 +20,23 @@ export default function BookingForm() {
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-
+  } = useForm<FormBookingDetails>();
+  const {
+    trigger: bookSlot,
+    isMutating: isBooking,
+    error: bookingError,
+  } = useCreateBooking();
+  const bookedDates = useBookedDates();
+  const { isLoading: isLoadingUser, data: userInfo } = useUser();
   const services = useSWR("/services", getServices);
-  const booked = useSWR("/bookings/dates", getBookedDates);
-  const { isLoading, error, data } = useSWR("/users/me", getUser);
-  const { trigger, isMutating,error:bookingError } = useSWRMutation("/bookings", createBooking);
 
   useEffect(() => {
-    if (bookingError?.status === "442") {
+    if (bookingError?.status === "409") {
       showSwalError("Sorry! This time slot is already booked");
-      return
     }
-    console.log(booked?.error);
-    console.log(bookingError?.status);
-    
-    if(error?.status === 401 || booked.error?.status === 401){
-      navigate("/")
-    }
+  }, [bookingError, showSwalError]);
 
-  }, [booked.error, bookingError, error, navigate, showSwalError]);
-
-  if (isLoading || booked.isLoading) {
+  if (isLoadingUser || bookedDates.isLoading) {
     return (
       <div className={styles.SpinnerContainer}>
         <Spinner />
@@ -55,11 +49,12 @@ export default function BookingForm() {
   const endOfYear = `${currentYear}-12-31`;
 
   const bookings: Record<string, string[]> = {};
-  Array.from(booked?.data).forEach((booking) => {
-    const [date, time] = booking.appointment_at.split("T");
-    if (!bookings[date]) bookings[date] = [];
+  Array.from(bookedDates?.data || []).forEach((bookedDate) => {
+    const [date, time] = bookedDate.appointment_at.split("T");
     const dateObj = parse(time, "HH:mm:ss", new Date());
     const formatTime = format(dateObj, "HH:mm");
+
+    if (!bookings[date]) bookings[date] = [];
     bookings[date].push(formatTime);
   });
 
@@ -76,38 +71,38 @@ export default function BookingForm() {
     {
       defaultValue: "Jane Doe",
       register: register,
-      labelText: "full Name",
-      name: "full_name",
-      value: data.full_name,
+      labelText: "name",
+      name: "name",
+      value: userInfo.name,
     },
     {
       defaultValue: "jane@email.com",
       register: register,
       labelText: "Email Address",
       name: "email",
-      value: data.email,
+      value: userInfo.email,
     },
     {
       defaultValue: "+27 234 567 890",
       register: register,
       labelText: "Phone Number",
       name: "phone",
-      value: data.phone,
+      value: userInfo.phone,
     },
   ];
-  
-  const bookedDate = watch("booked_date");
-  const serviceId = watch("service");
-  const service = services?.data?.find((service) => service.id === serviceId);
 
-  const onSubmit: SubmitHandler<Inputs> = async (bookingData) => {
-    const { id } = data;
+  const bookedDate = watch("bookedDate");
+  const serviceId = watch("service");
+  const service = services.data?.find((service) => service.id === serviceId);
+
+  const onSubmit: SubmitHandler<FormBookingDetails> = async (bookingData) => {
+    const { id } = userInfo;
     const bookingDetails = {
       ...bookingData,
-      user_id: id,
-      service_id: service.id,
+      userId: id,
+      serviceId: service!.id,
     };
-    const { booking } = await trigger(bookingDetails);
+    const { booking } = await bookSlot(bookingDetails);
     navigate(`/checkout/${booking.id}`);
   };
 
@@ -120,8 +115,8 @@ export default function BookingForm() {
 
       <div className={styles.formGrid}>
         {formFieldsData.map((formFieldData) => {
-          const { value } = formFieldData;
-          return <Input key={value} {...formFieldData} errors={errors} />;
+          const { name } = formFieldData;
+          return <Input key={name} {...formFieldData} errors={errors} />;
         })}
 
         <div className={`${styles.formGroup}`}>
@@ -133,7 +128,7 @@ export default function BookingForm() {
             <option value="" disabled={true}>
               Select a service
             </option>
-            {services.data.map((service) => (
+            {services.data?.map((service) => (
               <option value={service.id} key={service.id}>
                 {service.name}
               </option>
@@ -150,10 +145,10 @@ export default function BookingForm() {
             min={today}
             max={endOfYear}
             id="datePicker"
-            {...register("booked_date", { required: true })}
-            className={errors["booked_date"] && styles.error}
+            {...register("bookedDate", { required: true })}
+            className={errors["bookedDate"] && styles.error}
           />
-          {errors.booked_date && (
+          {errors.bookedDate && (
             <span className={styles.errorMessage}>date is required</span>
           )}
         </div>
@@ -162,8 +157,8 @@ export default function BookingForm() {
           <label>Time</label>
           <select
             id="timeSelect"
-            {...register("booked_time", { required: true })}
-            className={errors["booked_time"] && styles.error}
+            {...register("bookedTime", { required: true })}
+            className={errors["bookedTime"] && styles.error}
             disabled={!bookedDate}
           >
             <option value="">Select time</option>
@@ -176,7 +171,7 @@ export default function BookingForm() {
               );
             })}
           </select>
-          {errors.booked_time && (
+          {errors.bookedTime && (
             <span className={styles.errorMessage}>time is required</span>
           )}
         </div>
@@ -203,7 +198,7 @@ export default function BookingForm() {
       </div>
 
       <button className={styles.submitBtn} type="submit">
-        {isMutating ? <Spinner size={20} /> : " Book Appointment"}
+        {isBooking ? <Spinner size={20} /> : " Book Appointment"}
       </button>
     </form>
   );

@@ -5,17 +5,6 @@ import Spinner from "../../components/spinner/Spinner";
 import { getBooking } from "../../api/bookings";
 import { format, parse, parseISO } from "date-fns";
 
-const booking = {
-  date: "2026-02-12",
-  time: "10:00",
-  service: "Full body Massage",
-  fullName: "Thamsanqa Gumede",
-  email: "sainttsquared@gmail.com",
-  phone: "0659972023",
-  guests: "1",
-  request: "Prefers aromatherapy oils",
-};
-
 const Dashboard = () => {
   const params = useParams();
   const bookingId = params.id;
@@ -23,13 +12,15 @@ const Dashboard = () => {
     `/bookings/${bookingId}`,
     getBooking,
   );
+  // TODO: fetch services from service id from bookings
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className={styles.spinnerContainer}>
         <Spinner size={70} />
       </div>
     );
+  }
 
   if (error) return <div>failed to load</div>;
   const { booking } = data;
@@ -64,7 +55,7 @@ const Dashboard = () => {
 
           <div className={styles.item}>
             <span>Full Name</span>
-            <p>{booking.full_name || "Not Provided"}</p>
+            <p>{booking.name || "Not Provided"}</p>
           </div>
 
           <div className={styles.item}>

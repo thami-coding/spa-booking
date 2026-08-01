@@ -1,23 +1,16 @@
-import type { Inputs } from "../../types/types";
+import type { FormBookingDetails, FormFields } from "../../types/types";
 import styles from "./Input.module.css";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 type InputProps = {
-  register: UseFormRegister<Inputs>;
+  register: UseFormRegister<FormBookingDetails>;
   labelText: string;
   defaultValue: string;
-  name:
-    | "full_name"
-    | "email"
-    | "phone"
-    | "service"
-    | "booked_date"
-    | "booked_time"
-    | "guests"
-    | "request";
+  name: FormFields;
   value: string;
-  errors: FieldErrors<Inputs>;
+  errors: FieldErrors<FormBookingDetails>;
 };
+
 export default function Input({
   labelText,
   value,
@@ -25,7 +18,6 @@ export default function Input({
   register,
   errors,
 }: InputProps) {
-  
   const error = errors[name];
   const validation = name === "phone" ? { minLength: 10, maxLength: 10 } : {};
   const errorType = ["minLength", "maxLength"];

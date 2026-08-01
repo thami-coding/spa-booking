@@ -1,30 +1,12 @@
+import type { SetURLSearchParams } from "react-router";
+import { getPages } from "../../lib/pagination";
 import styles from "./Pagination.module.css";
 
-function getPages(current, total) {
-  const siblings = 1;
-  const pages = [];
-
-  const push = (v) => pages.push(v);
-
-  if (total <= 7) {
-    for (let i = 1; i <= total; i++) push(i);
-    return pages;
-  }
-
-  const left = Math.max(2, current - siblings);
-  const right = Math.min(total - 1, current + siblings);
-
-  push(1);
-
-  if (left > 2) push("…");
-
-  for (let i = left; i <= right; i++) push(i);
-
-  if (right < total - 1) push("…");
-
-  push(total);
-
-  return pages;
+interface PaginationProps {
+  page: number;
+  totalPages: number | undefined;
+  setPageIndex: (n: number) => void;
+  setSearchParams: SetURLSearchParams;
 }
 
 export default function Pagination({
@@ -32,7 +14,7 @@ export default function Pagination({
   totalPages,
   setPageIndex,
   setSearchParams,
-}) {
+}: PaginationProps) {
   if (!totalPages || totalPages <= 1) return null;
 
   const pages = getPages(page, totalPages);
@@ -65,7 +47,7 @@ export default function Pagination({
               <button
                 type="button"
                 className={`${styles.page} ${p === page ? styles.active : ""}`}
-                onClick={() => setPageNumber(p)}
+                onClick={() => setPageNumber(p as number)}
                 aria-current={p === page ? "page" : undefined}
               >
                 {p}

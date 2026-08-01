@@ -76,6 +76,7 @@
     padding: 14px;
     border: none;
     border-radius: 8px;
+     margin-top: 30px;
     background: #000000db;
     color: #fff;
     font-size: 16px;
@@ -100,8 +101,18 @@
     font-size: 14px;
     color: #000000ba;
     text-decoration: none;
+   
 }
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+.error{
+    color: rgba(235, 42, 42, 0.774);
+    margin-top: 5px;
+    text-align: left;
+    margin-top: -20px;
+    margin-bottom: 25px;
+    font-size: 0.8rem;
 }

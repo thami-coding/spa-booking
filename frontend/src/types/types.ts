@@ -1,49 +1,96 @@
+import type { ISOStringFormat } from "date-fns";
 import type { UseFormRegister } from "react-hook-form";
 
-export type Inputs = {
-  full_name: string;
+export interface FormBookingDetails {
+  name: string;
   email: string;
   phone: string;
   service: string;
-  booked_date: string;
-  booked_time: string;
+  userId: string;
+  serviceId: string;
+  bookedDate: string;
+  bookedTime: string;
   guests: number;
   request: string;
-};
+}
 
-export type FormFieldsData = {
+export interface FormFieldsData {
   defaultValue: string;
-  register: UseFormRegister<Inputs>;
+  register: UseFormRegister<FormBookingDetails>;
   labelText: string;
-  name: Fields;
+  name: FormFields;
   value: string;
-};
+}
 
-export type Fields =
-  | "full_name"
+export type FormFields =
+  | "name"
   | "email"
   | "phone"
   | "service"
-  | "booked_date"
-  | "booked_time"
+  | "bookedDate"
+  | "bookedTime"
   | "guests"
   | "request";
 
-export type Details = {
-  fullName: string;
-  email: string;
-  phone: string;
-  service: string;
-  booked_date:string;
-  booked_time:string;
-  guests: number;
-  request: string;
-  price: number;
-};
-
-export type AuthData = {
+export interface SignupData {
   email: string;
   password: string;
   confirmPassword?: string;
   name?: string;
-};
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface Booking {
+  id: string;
+  user_id: string;
+  appointment_at: string;
+  service_id: string;
+  is_paid: boolean;
+  name: string;
+  email: string;
+  phone: string;
+  guests: number;
+  request: string;
+}
+
+export interface BookingResponse {
+  booking: Booking;
+}
+
+export interface BookingsResponse {
+  bookings: Booking[];
+  totalPages: number;
+  page: number;
+  limit: number;
+}
+
+export interface BookedDates {
+  appointment_at: ISOStringFormat;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: "admin" | "user";
+  created_at: string;
+}
+
+export interface UserResponse {
+  user: User;
+}
+
+export interface Service {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface ApiErrorPayload {
+  detail: string | Array<{ loc: string[]; msg: string; type: string }>;
+}

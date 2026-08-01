@@ -1,10 +1,11 @@
-import SpaCard from './SpaCard';
+
+import SpaCard from '../card/SpaCard';
 import styles from './SpaCardList.module.css';
 
 
 
 const SpaCardList = () => {
-  const spaServices = [
+  const services = [
     {
       title: 'Relaxing Swedish Massage',
       description: 'A full-body massage designed to ease tension and promote relaxation.',
@@ -24,6 +25,7 @@ const SpaCardList = () => {
       price: 95
     }
   ];
+  
   return (
     <div className={styles.list}>
       {services.map((service, index) => (
