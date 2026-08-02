@@ -3,7 +3,7 @@ from typing import Annotated
 import jwt
 from fastapi import Cookie, HTTPException
 from passlib.context import CryptContext
-from config import BaseConfig
+from app.config import BaseConfig
 
 settings = BaseConfig()
 

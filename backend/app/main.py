@@ -1,13 +1,13 @@
 from fastapi import FastAPI
-from routers.bookings import router as booking_router
-from routers.users import router as user_router
-from routers.auth import router as auth_router
+from app.routers.bookings import router as booking_router
+from app.routers.users import router as user_router
+from app.routers.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from config import BaseConfig
+from app.config import BaseConfig
 from pymongo import AsyncMongoClient
-from routers.services import router as service_router
-from routers.payment import router as payment_router
+from app.routers.services import router as service_router
+from app.routers.payment import router as payment_router
 
 settings = BaseConfig()
 

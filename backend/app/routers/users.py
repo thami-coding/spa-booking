@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi import APIRouter, Body, HTTPException, Request, Depends
 from fastapi.encoders import jsonable_encoder
-from models.user import User
+from app.models.user import User
 from bson import ObjectId
-from core.security import AuthHandler
+from app.core.security import AuthHandler
 
 router = APIRouter()
 

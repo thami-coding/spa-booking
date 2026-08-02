@@ -3,7 +3,7 @@ from datetime import date
 from pydantic import EmailStr, BeforeValidator
 from typing import Optional, Annotated
 from datetime import date, time
-from models.service import Service
+from app.models.service import Service
 from pydantic.alias_generators import to_camel
 
 PyObjectId = Annotated[str, BeforeValidator(str)]

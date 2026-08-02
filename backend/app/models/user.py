@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from schemas.role import Role
+from app.schemas.role import Role
 from pydantic import BaseModel, EmailStr, Field, BeforeValidator, ConfigDict
 from typing import Annotated
 

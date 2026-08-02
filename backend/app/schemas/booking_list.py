@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from schemas.booking import Booking
+from app.schemas.booking import Booking
 
 
 class BookingsResponse(BaseModel):

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Request, Body
-from config import BaseConfig
-from lib.payment_utils import generatePaymentIdentifier, generateSignature, dataToString
+from app.config import BaseConfig
+from app.lib.payment_utils import generatePaymentIdentifier, generateSignature, dataToString
 from bson import ObjectId
-from schemas.payment import Payment
+from app.schemas.payment import Payment
 
 router = APIRouter()
 settings = BaseConfig()

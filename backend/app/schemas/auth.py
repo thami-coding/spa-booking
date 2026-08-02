@@ -3,7 +3,7 @@ from pydantic import BeforeValidator, ConfigDict, BaseModel, Field, EmailStr
 from typing import Annotated, Optional
 
 from pydantic_core import PydanticCustomError
-from schemas.role import Role
+from app.schemas.role import Role
 from pydantic.alias_generators import to_camel
 
 PyObjectId = Annotated[str, BeforeValidator(str)]

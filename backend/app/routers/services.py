@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
-from seed_data import all_services
-from schemas.services_response import ServicesResponse
+from app.seed_data import all_services
+from app.schemas.services_response import ServicesResponse
 
 router = APIRouter()
 

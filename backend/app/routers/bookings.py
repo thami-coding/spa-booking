@@ -1,10 +1,10 @@
 import math
-from models.booking import Booking
+from app.models.booking import Booking
 from datetime import datetime, timezone
 from bson import ObjectId
-from schemas.booking import BookingResponse
-from schemas.booking_list import BookingsResponse
-from core.security import AuthHandler
+from app.schemas.booking import BookingResponse
+from app.schemas.booking_list import BookingsResponse
+from app.core.security import AuthHandler
 from fastapi import (
     APIRouter,
     status,

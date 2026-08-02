@@ -2,11 +2,11 @@ from fastapi import APIRouter, Response,status
 from fastapi import HTTPException, Body, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from models.user import User
-from schemas.auth import UserReg
-from core.security import AuthHandler
-from schemas.auth import AuthResponse
-from schemas.auth import UserIn
+from app.models.user import User
+from app.schemas.auth import UserReg
+from app.core.security import AuthHandler
+from app.schemas.auth import AuthResponse
+from app.schemas.auth import UserIn
 
 router = APIRouter()
 auth_handler = AuthHandler()
