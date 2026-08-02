@@ -31,9 +31,8 @@ const AuthPage = ({ mode }: AuthProps) => {
   } = useForm<SignupData>();
 
   const isLogin = mode === "login";
-
   const err = (loginError || signupError) as AxiosError<ApiErrorPayload>;
-  console.log(err?.response);
+
 
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
     if (isLogin) {
