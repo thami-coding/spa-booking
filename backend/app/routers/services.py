@@ -9,7 +9,6 @@ router = APIRouter()
 async def get_services(request: Request):
     cursor = request.app.state.db.services.find()
     services = []
-    print(cursor)
     async for doc in cursor:
         services.append(doc)
         

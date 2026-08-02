@@ -1,6 +1,5 @@
 import logging
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.routers.bookings import router as booking_router
 from app.routers.users import router as user_router
@@ -46,7 +45,7 @@ origins = ["https://spa-booking031.netlify.app"]
 
 if settings.ENVIRONMENT == "Development":
     origins = ["*"]
-print(origins)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
