@@ -35,7 +35,6 @@ const AuthPage = ({ mode }: AuthProps) => {
   const err = (isLogin ? loginError : signupError) as AxiosError<ApiErrorPayload>;
 
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
-    console.log(isLogin);
 
     if (isLogin) {
       const { name, confirmPassword, ...loginCredentials } = data;
@@ -51,6 +50,8 @@ const AuthPage = ({ mode }: AuthProps) => {
 
   const isLoading = isLoginLoading || isSignupLoading;
   const errDetails = err && err?.response?.data?.detail;
+  console.log(errDetails);
+  
   const errorMsg =
     typeof errDetails === "string"
       ? errDetails
@@ -78,6 +79,7 @@ const AuthPage = ({ mode }: AuthProps) => {
           <label>Password</label>
         </div>
         {err && <div className={styles.error}>{errorMsg}</div>}
+
         {!isLogin && (
           <div className={styles.inputGroup}>
             <input type="password" {...register("confirmPassword")} required />
