@@ -13,7 +13,7 @@ router = APIRouter()
 auth_handler = AuthHandler()
 environment = BaseConfig().ENVIRONMENT
 isProduction = environment == "Production"
-
+print(isProduction)
 
 @router.post(
     "/register",
