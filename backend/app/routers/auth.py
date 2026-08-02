@@ -27,17 +27,15 @@ async def register(request: Request, newUser: UserReg = Body(...)):
 
     email = document["email"]
     password = document["password"]
-    role = document.get("role")
-
     isRegistered = await request.app.state.db.users.find_one({"email": email})
 
     if isRegistered:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="email is already registered")
-
-    if role is None or role != "admin":
-        document["role"] = "user"
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="email is already registered"
+        )
 
     document.pop("confirm_password")
+    document["role"] = "user"
     document["password"] = auth_handler.get_password_hash(password)
     result = await request.app.state.db.users.insert_one(document)
     user = await request.app.state.db.users.find_one(
@@ -51,22 +49,25 @@ async def register(request: Request, newUser: UserReg = Body(...)):
 async def login(request: Request, loginUser: UserIn = Body(...)):
     document = loginUser.model_dump()
     email = document["email"]
-
     user = await request.app.state.db.users.find_one({"email": email})
-    
+
     if not user:
-        raise  HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
-    
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
+        )
+
     user_model = User(**user)
     user_clean = jsonable_encoder(user_model, by_alias=False)
-
-    if (user is None) or (
-        not auth_handler.verify_password(loginUser.password, user["password"])
-    ):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+    isPasswordValid = auth_handler.verify_password(loginUser.password, user["password"])
+    
+    if not isPasswordValid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
+        )
 
     token = auth_handler.encode_token(str(user["_id"]), user["role"])
-
     response = JSONResponse(content={"access_token": token, "user": user_clean})
     response.set_cookie(
         key="access_token",
@@ -75,6 +76,7 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
         secure=isProduction,
         samesite="none" if isProduction else "lax",
     )
+    
     return response
 
 
