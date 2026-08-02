@@ -17,9 +17,12 @@ auth_handler = AuthHandler()
 )
 async def get_user(request: Request, user_data=Depends(auth_handler.auth_wrapper)):
     user_id = ObjectId(user_data["user_id"])
-    user_db = await request.app.state.db.users.find_one({"_id": user_id}, {"password": 0})
+    user_db = await request.app.state.db.users.find_one(
+        {"_id": user_id}, {"password": 0}
+    )
     user_model = User(**user_db)
     user = jsonable_encoder(user_model, by_alias=False)
+
     return {"user": user}
 
 

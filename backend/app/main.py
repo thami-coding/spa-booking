@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from app.routers.bookings import router as booking_router
 from app.routers.users import router as user_router
 from app.routers.auth import router as auth_router
@@ -10,6 +13,11 @@ from app.routers.services import router as service_router
 from app.routers.payment import router as payment_router
 
 settings = BaseConfig()
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger("booking")
 
 
 @asynccontextmanager
@@ -23,7 +31,6 @@ async def lifespan(app: FastAPI):
     try:
         await app.state.client.admin.command("ping")
         print("You have successfully connected to MongoDB!")
-        print("Mongo address:", settings.DB_URL)
     except Exception as e:
         print(f"Connection error: {e}")
 
@@ -39,7 +46,7 @@ origins = ["https://spa-booking031.netlify.app"]
 
 if settings.ENVIRONMENT == "Development":
     origins = ["*"]
-    
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -47,6 +54,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.warning(f"{exc.status_code} {request.method} {request.url.path}: {exc.detail}")
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.error(f"500 {request.method} {request.url.path}: {exc}", exc_info=True)
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
 
 @app.get("/")

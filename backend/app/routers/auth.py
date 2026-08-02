@@ -32,7 +32,7 @@ async def register(request: Request, newUser: UserReg = Body(...)):
     isRegistered = await request.app.state.db.users.find_one({"email": email})
 
     if isRegistered:
-        raise HTTPException(status_code=409, detail="email is already registered")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="email is already registered")
 
     if role is None or role != "admin":
         document["role"] = "user"
@@ -53,6 +53,10 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
     email = document["email"]
 
     user = await request.app.state.db.users.find_one({"email": email})
+    
+    if not user:
+        raise  HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+    
     user_model = User(**user)
     user_clean = jsonable_encoder(user_model, by_alias=False)
 
