@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response,status
+from fastapi import APIRouter, Response, status
 from fastapi import HTTPException, Body, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
@@ -7,9 +7,12 @@ from app.schemas.auth import UserReg
 from app.core.security import AuthHandler
 from app.schemas.auth import AuthResponse
 from app.schemas.auth import UserIn
+from app.config import BaseConfig
 
 router = APIRouter()
 auth_handler = AuthHandler()
+environment = BaseConfig().ENVIRONMENT
+isProduction = environment == "Production"
 
 
 @router.post(
@@ -40,7 +43,7 @@ async def register(request: Request, newUser: UserReg = Body(...)):
     user = await request.app.state.db.users.find_one(
         {"_id": result.inserted_id}, {"role": 1, "_id": 1}
     )
-    
+
     return user
 
 
@@ -64,20 +67,21 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
     response.set_cookie(
         key="access_token",
         value=token,
-        httponly=True,  
-        secure=False,    
-        samesite="lax",
+        httponly=True,
+        secure=isProduction,
+        samesite="none" if isProduction else "lax",
     )
     return response
+
 
 @router.post("/logout", response_description="Logout user")
 async def logout(request: Request):
     response = Response(status_code=status.HTTP_204_NO_CONTENT)
     response.delete_cookie(
         key="access_token",
-        httponly=True,  
-        secure=False,    
-        samesite="lax",
+        httponly=True,
+        secure=isProduction,
+        samesite="none" if isProduction else "lax",
     )
-    
+
     return response

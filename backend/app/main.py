@@ -35,8 +35,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-origins = ["*"]
-# origins = ["https://d1f2-168-210-105-91.ngrok-free.app","http://localhost:8000"]
+origins = ["https://https://spa-booking031.netlify.app"]
+
+if settings.ENVIRONMENT == "Development":
+    origins = ["*"]
+    
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
