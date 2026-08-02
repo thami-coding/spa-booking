@@ -11,9 +11,10 @@ from app.config import BaseConfig
 
 router = APIRouter()
 auth_handler = AuthHandler()
-environment = BaseConfig().ENVIRONMENT
+environment = BaseConfig().ENVIRONMENT 
 isProduction = environment == "Production"
-print(isProduction)
+print("environment: ", environment)
+print("isProduction: ", isProduction)
 
 @router.post(
     "/register",

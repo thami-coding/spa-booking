@@ -11,8 +11,8 @@ async def get_services(request: Request):
     services = []
     print(cursor)
     async for doc in cursor:
-        print(doc)
         services.append(doc)
+        
     return ServicesResponse(services=services)
 
 
