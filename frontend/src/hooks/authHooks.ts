@@ -29,6 +29,7 @@ export const useSignup = () => {
 export const useUser = () => {
   const { isLoading, data, error } = useSWR("/users/me", getUser, {
     shouldRetryOnError: false,
+    revalidateOnFocus: false,
   });
 
   return {

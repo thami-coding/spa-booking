@@ -1,14 +1,12 @@
 import { Link } from "react-router";
 import styles from "./HomePage.module.css";
-import useSWR, { mutate } from "swr";
-import { getUser } from "../../api/user";
 import useSWRMutation from "swr/mutation";
 import { logout } from "../../api/auth";
+import { useUser } from "../../hooks/authHooks";
+import { mutate } from "swr";
 
 export default function HomePage() {
-  const { isLoading, data } = useSWR("/users/me", getUser, {
-    shouldRetryOnError: false,
-  });
+const {isLoading, data} = useUser()
 
   const { trigger: logoutUser } = useSWRMutation("/auth/logout", logout);
 
@@ -18,7 +16,6 @@ export default function HomePage() {
   };
 
   if (isLoading) return null;
-  console.log(data);
 
   return (
     <section className={styles.hero}>
