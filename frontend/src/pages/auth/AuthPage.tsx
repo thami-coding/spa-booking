@@ -27,15 +27,15 @@ const AuthPage = ({ mode }: AuthProps) => {
   const {
     register,
     handleSubmit,
-   // formState: { errors }, //TOD: use these form errors for client side validation
+    // formState: { errors }, //TOD: use these form errors for client side validation
   } = useForm<SignupData>();
 
   const isLogin = mode === "login";
 
-  const err = (isLogin ? loginError : signupError) as AxiosError<ApiErrorPayload>;
+  const err = (loginError || signupError) as AxiosError<ApiErrorPayload>;
+  console.log(err.response);
 
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
-
     if (isLogin) {
       const { name, confirmPassword, ...loginCredentials } = data;
       const userResponse = await login(loginCredentials);
@@ -49,9 +49,7 @@ const AuthPage = ({ mode }: AuthProps) => {
   };
 
   const isLoading = isLoginLoading || isSignupLoading;
-  const errDetails = err && err?.response?.data?.detail;
-  console.log(errDetails);
-  
+  const errDetails = err?.response?.data?.detail;
   const errorMsg =
     typeof errDetails === "string"
       ? errDetails

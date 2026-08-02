@@ -46,7 +46,7 @@ origins = ["https://spa-booking031.netlify.app"]
 
 if settings.ENVIRONMENT == "Development":
     origins = ["*"]
-
+print(origins)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

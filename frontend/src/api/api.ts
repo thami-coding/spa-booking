@@ -2,8 +2,9 @@ import axios from "axios";
 import { mutate } from "swr";
 import { cache } from "swr/_internal";
 
-const API_BASE_URL ="https://spa-booking.fastapicloud.dev";
-// "http://localhost:8000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const isDev = import.meta.env.DEV;
+const API_BASE_URL = isDev ? "http://localhost:8000" : BACKEND_URL;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
