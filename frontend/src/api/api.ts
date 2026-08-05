@@ -8,6 +8,7 @@ const API_BASE_URL = isDev ? "http://localhost:8000" : BACKEND_URL;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
+   timeout: 10000,
   withCredentials: true,
 });
 
@@ -20,16 +21,14 @@ api.interceptors.response.use(
 
     if (response && response.status === 401) {
       const publicAuthRoutes = ["/login", "/register", "/"];
-
       const isPublicRoute = publicAuthRoutes.some((route) =>
         config.url.includes(route),
       );
-      console.log("hererere");
+      
       if (cache instanceof Map) {
         cache.clear();
       }
       mutate(() => true, undefined, { revalidate: false });
-
       if (!isPublicRoute) {
         window.location.replace("/login");
       }
