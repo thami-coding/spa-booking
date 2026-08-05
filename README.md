@@ -1,5 +1,4 @@
-# 💆 Spa Booking Application
-
+![pnpm](https://img.shields.io/badge/pnpm-%234a4a4a.svg?style=flat-square&logo=pnpm&logoColor=f69220)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
@@ -11,6 +10,7 @@
 ![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
 ![PayFast](https://img.shields.io/badge/PayFast-CC0000?style=flat-square&logo=creditcard&logoColor=white)
+# 💆 Spa Booking Application
 
 A full-stack single-page web application (SPA) designed for browsing spa services, scheduling appointments, and managing online bookings.
 
@@ -47,30 +47,77 @@ A full-stack single-page web application (SPA) designed for browsing spa service
 
 <br />
 
-## Project Setup
+## Getting Started
 
-### 2. Frontend Setup
+### Prerequisites
+- Node.js v24
+- Python v3
+- A Mongodb Atlas (URL)
+- PayFast merchant credentials (sandbox)
+
+### 1. Clone the repository
 ```bash
-cd frontend
+git clone <repo-url>
+cd spa-booking
+```
 
-# Install dependencies fast with pnpm
+### 2. Install dependencies
+```bash
+# Frontend
+cd frontend
 pnpm install
 
-#  Run Vite dev server
+# Backend
+cd backend
+uv venv  # Create virtual environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+uv sync # Install dependencies
+```
+
+### 3. Environment variables
+
+**Backend (`backend/.env.local`)**
+```env
+DB_URL=
+DB_NAME=
+JWT_SECRET=
+PAYFAST_MERCHANT_ID=
+PAYFAST_MERCHANT_KEY=
+PAYFAST_PASSPHRASE=
+ENVIRONMENT=
+```
+
+<br />
+
+**Frontend (`frontend/.env`)**
+```env
+VITE_BACKEND_URL=
+
+```
+
+### 4. Run the app locally
+
+```bash
+# Backend
+cd backend
+uvicorn app.main:app --reload # Start FastAPI development server
+
+# Frontend (in a separate terminal)
+cd frontend
 pnpm run dev
 ```
 
-### 1. Backend Setup
-```bash
-cd backend
+The frontend will run on `http://localhost:5173` and the backend on `http://localhost:8000` by default.
 
-# Create virtual environment and install dependencies using uv
-uv venv
-source .venv/bin/activate
-.venv\Scripts\activate # On Windows
+---
 
-# Install dependencies fast with uv
-uv sync
+<br />
 
-# Start FastAPI development server
-uv run uvicorn main:app --reload
+## Scripts
+
+| Command | Location | Description |
+|---|---|---|
+| `pnpm run dev` | frontend | Start development server |
+| `uvicorn app.main:app --reload` | backend | Start development server |
+
+
