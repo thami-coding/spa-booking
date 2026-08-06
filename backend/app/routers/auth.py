@@ -8,6 +8,7 @@ from app.core.security import AuthHandler
 from app.schemas.auth import AuthResponse
 from app.schemas.auth import UserIn
 from app.config import BaseConfig
+from app.core.roles import Role
 
 router = APIRouter()
 auth_handler = AuthHandler()
@@ -35,7 +36,7 @@ async def register(request: Request, newUser: UserReg = Body(...)):
         )
 
     document.pop("confirm_password")
-    document["role"] = "user"
+    document["role"] = Role.USER.value
     document["password"] = auth_handler.get_password_hash(password)
     result = await request.app.state.db.users.insert_one(document)
     user = await request.app.state.db.users.find_one(

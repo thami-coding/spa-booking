@@ -1,15 +1,19 @@
 import datetime
+from enum import Enum
 from typing import Annotated
 import jwt
-from fastapi import Cookie, HTTPException
+from fastapi import Cookie, Depends, HTTPException, status
 from passlib.context import CryptContext
 from app.config import BaseConfig
+from app.core.roles import Role
 
 settings = BaseConfig()
+
 
 class AuthHandler:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     secret = settings.JWT_SECRET
+
     def get_password_hash(self, password: str) -> str:
         return self.pwd_context.hash(password)
 
@@ -36,15 +40,27 @@ class AuthHandler:
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=401, detail="Signature has expired")
         except jwt.InvalidTokenError as e:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )
 
     def auth_wrapper(
         self, access_token: Annotated[str | None, Cookie()] = None
     ) -> dict:
         if not access_token:
-            raise HTTPException(
-                status_code=401,
-                detail="Not authenticated"
-            )
-        
+            raise HTTPException(status_code=401, detail="Not authenticated")
+
         return self.decode_token(access_token)
+
+    def admin_wrapper(
+        self, access_token: Annotated[str | None, Cookie()] = None
+    ) -> dict:
+        payload = self.auth_wrapper(access_token)
+        print(payload)
+        if payload["role"] != Role.ADMIN.value:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin privileges required",
+            )
+
+        return payload

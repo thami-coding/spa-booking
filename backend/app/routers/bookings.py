@@ -70,7 +70,7 @@ async def create_booking(
 )
 async def get_bookings(
     request: Request,
-    user_data=Depends(auth_handler.auth_wrapper),
+    user=Depends(auth_handler.admin_wrapper),
     page: int = Query(ge=1, default=1),
     limit: int = Query(ge=10, default=10),
 ):
