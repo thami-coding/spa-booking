@@ -117,7 +117,7 @@ textarea {
   height: 100%;
   align-items: center;
   justify-content: right;
-  /* border: 1px solid red; */
+ 
 }
 @media (max-width: 640px) {
   .formGrid {
