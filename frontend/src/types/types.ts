@@ -50,6 +50,7 @@ export interface Booking {
   appointment_at: string;
   service_id: string;
   is_paid: boolean;
+  amount: string;
   name: string;
   email: string;
   phone: string;

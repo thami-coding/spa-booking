@@ -1,4 +1,5 @@
 import styles from "./Auth.module.css";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import Spinner from "../../components/spinner/Spinner";
@@ -6,12 +7,14 @@ import type { ApiErrorPayload, SignupData } from "../../types/types";
 import type { AxiosError } from "axios";
 import { mutate } from "swr";
 import { useLogin, useSignup } from "../../hooks/authHooks";
+import { Eye, EyeOff } from "lucide-react";
 
 type AuthProps = {
   mode: "login" | "signup";
 };
 const AuthPage = ({ mode }: AuthProps) => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const {
     trigger: login,
     isMutating: isSignupLoading,
@@ -32,7 +35,6 @@ const AuthPage = ({ mode }: AuthProps) => {
 
   const isLogin = mode === "login";
   const err = (loginError || signupError) as AxiosError<ApiErrorPayload>;
-
 
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
     if (isLogin) {
@@ -72,8 +74,19 @@ const AuthPage = ({ mode }: AuthProps) => {
         </div>
 
         <div className={styles.inputGroup}>
-          <input type="password" {...register("password")} required />
+          <input
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            required
+          />
           <label>Password</label>
+          <button
+            className={styles.showPassword}
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <Eye /> : <EyeOff />}
+          </button>
         </div>
         {err && <div className={styles.error}>{errorMsg}</div>}
 

@@ -93,7 +93,9 @@ export default function BookingForm() {
 
   const bookedDate = watch("bookedDate");
   const serviceId = watch("service");
+  const guestNumber = watch("guests");
   const service = services.data?.find((service) => service.id === serviceId);
+  const totalCost = (service?.price ?? 0) * guestNumber;
 
   const onSubmit: SubmitHandler<FormBookingDetails> = async (bookingData) => {
     const { id } = userInfo;
@@ -107,6 +109,7 @@ export default function BookingForm() {
   };
 
   const bookedTimes = bookings[bookedDate] || [];
+console.log(errors.service);
 
   return (
     <form className={styles.bookingForm} onSubmit={handleSubmit(onSubmit)}>
@@ -122,6 +125,7 @@ export default function BookingForm() {
         <div className={`${styles.formGroup}`}>
           <label>Service</label>
           <select
+          defaultValue=""
             className={errors["service"] && styles.error}
             {...register("service", { required: true })}
           >
@@ -186,7 +190,7 @@ export default function BookingForm() {
         </div>
         <div className={styles.formGroup}>
           <label>Price</label>
-          <input disabled value={`R ${service?.price ?? 0.0}`} />
+          <input disabled value={totalCost} />
         </div>
         <div className={`${styles.formGroup} ${styles.fullWidth}`}>
           <label>Special Requests</label>

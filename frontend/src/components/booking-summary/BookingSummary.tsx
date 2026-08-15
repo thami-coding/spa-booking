@@ -7,8 +7,12 @@ import type { Booking } from "../../types/types";
 interface BookingSummaryProps {
   bookingDetails: Booking | undefined;
 }
-export default function BookingSummary({ bookingDetails }: BookingSummaryProps) {
-  const { appointment_at, id, user_id, is_paid, service_id, ...rest } =
+export default function BookingSummary({
+  bookingDetails,
+}: BookingSummaryProps) {
+  console.log(bookingDetails);
+
+  const { appointment_at, id, user_id, is_paid, service_id, amount, ...rest } =
     bookingDetails!;
 
   const [bookedDate, bookedTime] = appointment_at.split("T");
@@ -32,7 +36,7 @@ export default function BookingSummary({ bookingDetails }: BookingSummaryProps) 
       })}
 
       <div className={styles.divider} />
-      <Row detail={`R ${Number(350.0).toFixed(2)}`} detailName={"Total"} />
+      <Row detail={`R ${amount}`} detailName={"Total"} />
     </div>
   );
 }
