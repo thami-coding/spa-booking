@@ -50,15 +50,23 @@ async def create_booking(
     document["appointment_at"] = combined_datetime
     document["user_id"] = user_data["user_id"]
     document["is_paid"] = False
-
     document.pop("booked_date")
     document.pop("booked_time")
 
+    service_id = document["service_id"]
+    service = await request.app.state.db.services.find_one(
+        {"_id": ObjectId(service_id)}
+    )
+    price = service["price"]
+    guests = document["guests"]
+    amount = int(guests) * int(price)
+    document["amount"] = str(amount)
     result = await request.app.state.db.bookings.insert_one(document)
+
     created_booking = await request.app.state.db.bookings.find_one(
         {"_id": result.inserted_id}
     )
-    
+
     return BookingResponse(booking=created_booking)
 
 

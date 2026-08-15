@@ -11,10 +11,10 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class Booking(BaseModel):
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
+    service_id: str = Field(...)
     booked_date: date = Field(...)
     booked_time: time = Field(...)
     name: str = Field(..., min_length=5)
-    service_id: str = Field(...)
     email: EmailStr = Field(...)
     phone: str = Field(..., min_length=10, max_length=10)
     guests: int = Field(..., gt=0)

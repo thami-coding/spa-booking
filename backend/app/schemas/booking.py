@@ -29,6 +29,7 @@ class CreatedBooking(BaseModel):
     appointment_at: datetime = Field(...)
     service_id: str = Field(...)
     is_paid: bool = Field(default=False)
+    amount: str = Field(...)
     name: str = Field(..., min_length=5)
     email: EmailStr = Field(...)
     phone: str = Field(..., min_length=10, max_length=10)
