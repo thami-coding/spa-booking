@@ -97,7 +97,6 @@ export default function BookingForm() {
   const service = services.data?.find((service) => service.id === serviceId);
   const totalCost = (service?.price ?? 0) * guestNumber;
 
-
   const onSubmit: SubmitHandler<FormBookingDetails> = async (bookingData) => {
     const { id } = userInfo;
     const bookingDetails = {
@@ -110,7 +109,6 @@ export default function BookingForm() {
   };
 
   const bookedTimes = bookings[bookedDate] || [];
-console.log(errors.service);
 
   return (
     <form className={styles.bookingForm} onSubmit={handleSubmit(onSubmit)}>
@@ -126,7 +124,7 @@ console.log(errors.service);
         <div className={`${styles.formGroup}`}>
           <label>Service</label>
           <select
-          defaultValue=""
+            defaultValue=""
             className={errors["service"] && styles.error}
             {...register("service", { required: true })}
           >
@@ -193,7 +191,6 @@ console.log(errors.service);
           <label>Price</label>
 
           <input disabled value={totalCost} />
-
         </div>
         <div className={`${styles.formGroup} ${styles.fullWidth}`}>
           <label>Special Requests</label>

@@ -69,10 +69,9 @@ const AuthPage = ({ mode }: AuthProps) => {
           </div>
         )}
         <div className={styles.inputGroup}>
-          <input type="email" {...register("email")} required />
+          <input {...register("email")} required />
           <label>Email</label>
         </div>
-
         <div className={styles.inputGroup}>
           <input
             type={showPassword ? "text" : "password"}
@@ -92,8 +91,19 @@ const AuthPage = ({ mode }: AuthProps) => {
 
         {!isLogin && (
           <div className={styles.inputGroup}>
-            <input type="password" {...register("confirmPassword")} required />
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("confirmPassword")}
+              required
+            />
             <label>Confirm password</label>
+            <button
+              className={styles.showPassword}
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <Eye /> : <EyeOff />}
+            </button>
           </div>
         )}
 
