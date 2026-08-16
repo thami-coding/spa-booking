@@ -50,7 +50,7 @@ export default function BookingForm() {
 
   const bookings: Record<string, string[]> = {};
   Array.from(bookedDates?.data || []).forEach((bookedDate) => {
-    const [date, time] = bookedDate.appointment_at.split("T");
+    const [date, time] = bookedDate.appointmentAt.split("T");
     const dateObj = parse(time, "HH:mm:ss", new Date());
     const formatTime = format(dateObj, "HH:mm");
 
@@ -105,7 +105,7 @@ export default function BookingForm() {
       serviceId: service!.id,
     };
     const { booking } = await bookSlot(bookingDetails);
-    navigate(`/checkout/${booking.id}`);
+    navigate(`/checkout/${booking._id}`);
   };
 
   const bookedTimes = bookings[bookedDate] || [];

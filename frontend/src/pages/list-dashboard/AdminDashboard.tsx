@@ -8,6 +8,7 @@ import { useAllBookings } from "../../hooks/bookingHooks";
 
 const AdminDashboard = () => {
   const [pageIndex, setPageIndex] = useState(1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
@@ -35,7 +36,7 @@ const AdminDashboard = () => {
           </div>
 
           {data?.bookings.map((booking) => {
-            const [date, time] = booking.appointment_at.split("T");
+            const [date, time] = booking.appointmentAt.split("T");
             const bookedDate = format(parseISO(date), "EEEE, MMMM d, yyyy");
             const dateObj = parse(time, "HH:mm:ss", new Date());
             const bookedTime = format(dateObj, "h:mm a");
@@ -43,8 +44,8 @@ const AdminDashboard = () => {
 
             return (
               <Link
-                to={`/bookings/${booking.id}`}
-                key={booking.id}
+                to={`/bookings/${booking._id}`}
+                key={booking._id}
                 className={`${styles.row} ${isTodayDate && styles.active}`}
               >
                 <span>{booking.name}</span>
