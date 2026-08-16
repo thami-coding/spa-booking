@@ -45,7 +45,7 @@ export interface LoginData {
 }
 
 export interface Booking {
-  _id: string;
+  id: string;
   userId: string;
   appointmentAt: string;
   serviceId: string;

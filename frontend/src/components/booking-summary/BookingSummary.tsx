@@ -11,7 +11,7 @@ export default function BookingSummary({
   bookingDetails,
 }: BookingSummaryProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { appointmentAt, _id, userId, isPaid, serviceId, amount, ...rest } =
+  const { appointmentAt, id, userId, isPaid, serviceId, amount, ...rest } =
     bookingDetails!;
 
   const [bookedDate, bookedTime] = appointmentAt.split("T");

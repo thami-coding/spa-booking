@@ -105,7 +105,9 @@ export default function BookingForm() {
       serviceId: service!.id,
     };
     const { booking } = await bookSlot(bookingDetails);
-    navigate(`/checkout/${booking._id}`);
+    console.log(booking);
+    
+    navigate(`/checkout/${booking.id}`);
   };
 
   const bookedTimes = bookings[bookedDate] || [];

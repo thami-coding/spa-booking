@@ -16,7 +16,6 @@ export default function CheckoutPage() {
   const serviceId = data?.booking.serviceId;
   const email = data?.booking.email;
   const guests = data?.booking.guests;
-  console.log(data?.booking);
   
   const { handlePayment, isLoading } = usePaymentModal({
     email,
