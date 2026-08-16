@@ -41,7 +41,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-origins = ["https://spa-booking031.netlify.app"]
+# origins = ["https://spa-booking031.netlify.app"]
+origins = ["https://4083-196-2-27-76.ngrok-free.app"]
 
 if settings.ENVIRONMENT == "Development":
     origins = ["*"]

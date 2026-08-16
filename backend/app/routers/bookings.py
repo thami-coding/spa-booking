@@ -134,7 +134,7 @@ async def get_booked_dates(
     "/{id}",
     response_description="Booking retrieved successfully",
     response_model=BookingResponse,
-    response_model_by_alias=False,
+    response_model_by_alias=True,
 )
 async def get_booking_by_id(request: Request, id: str = Path(...)):
     booking = await request.app.state.db.bookings.find_one(
