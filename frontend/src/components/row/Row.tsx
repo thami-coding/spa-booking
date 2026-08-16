@@ -1,7 +1,7 @@
 import styles from "./Row.module.css";
 
 type RowProps = {
-    detail: string | number
+    detail: string | number | boolean;
     detailName: string
 }
 

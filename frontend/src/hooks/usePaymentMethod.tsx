@@ -6,15 +6,19 @@ import { generatePaymentId } from "../api/payment";
 
 type PaymentModalArgs = {
   email: string;
-  service_id: string;
+  serviceId: string;
   bookingId: string;
+  guests: number;
 };
 
 export const usePaymentModal = ({
   email,
-  service_id,
+  serviceId,
   bookingId,
+  guests,
 }: PaymentModalArgs) => {
+  console.log(serviceId);
+
   const { showSwalSuccess, showSwalError } = useAlert();
   const { trigger } = useSWRMutation("/bookings", updateBooking);
   const pay = useSWRMutation("/payment", generatePaymentId);
@@ -33,8 +37,16 @@ export const usePaymentModal = ({
 
   const handlePayment = async () => {
     setIsLoading(true);
-    const { paymentIdentifier } = await pay.trigger({ email, service_id });
+    const { paymentIdentifier } = await pay.trigger({
+      email,
+      serviceId,
+      bookingId,
+      guests,
+    });
+    // TODO: fix below typing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((window as any).payfast_do_onsite_payment) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).payfast_do_onsite_payment(
         { uuid: paymentIdentifier },
         function (result: boolean) {

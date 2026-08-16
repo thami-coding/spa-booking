@@ -10,12 +10,11 @@ interface BookingSummaryProps {
 export default function BookingSummary({
   bookingDetails,
 }: BookingSummaryProps) {
-  console.log(bookingDetails);
-
-  const { appointment_at, id, user_id, is_paid, service_id, amount, ...rest } =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { appointmentAt, _id, userId, isPaid, serviceId, amount, ...rest } =
     bookingDetails!;
 
-  const [bookedDate, bookedTime] = appointment_at.split("T");
+  const [bookedDate, bookedTime] = appointmentAt.split("T");
   const date = format(parseISO(bookedDate), "EEEE, MMMM d, yyyy");
   const dateObj = parse(bookedTime, "HH:mm:ss", new Date());
   const time = format(dateObj, "h:mm a");
@@ -27,9 +26,7 @@ export default function BookingSummary({
       {details.map((detail, index) => {
         const noRequest = detail === "request" && booking[detail] === "";
         const detailName = capitalizeFirst(String(detail));
-
         if (noRequest) return;
-
         return (
           <Row key={index} detail={booking[detail]} detailName={detailName} />
         );

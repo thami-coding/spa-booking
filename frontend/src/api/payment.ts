@@ -2,7 +2,9 @@ import { api } from "./api";
 
 interface PaymentPayload {
   email: string;
-  service_id: string;
+  serviceId: string;
+  bookingId: string;
+  guests: number;
 }
 export const generatePaymentId = async (
   url: string,

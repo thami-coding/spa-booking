@@ -13,12 +13,16 @@ export default function CheckoutPage() {
     `/bookings/${bookingId}`,
     getBooking,
   );
-  const service_id = data?.booking.service_id;
+  const serviceId = data?.booking.serviceId;
   const email = data?.booking.email;
+  const guests = data?.booking.guests;
+  console.log(data?.booking);
+  
   const { handlePayment, isLoading } = usePaymentModal({
     email,
-    service_id,
+    serviceId,
     bookingId,
+    guests,
   });
 
   return (

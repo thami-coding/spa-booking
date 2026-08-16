@@ -45,11 +45,11 @@ export interface LoginData {
 }
 
 export interface Booking {
-  id: string;
-  user_id: string;
-  appointment_at: string;
-  service_id: string;
-  is_paid: boolean;
+  _id: string;
+  userId: string;
+  appointmentAt: string;
+  serviceId: string;
+  isPaid: boolean;
   amount: string;
   name: string;
   email: string;
@@ -70,7 +70,7 @@ export interface BookingsResponse {
 }
 
 export interface BookedDates {
-  appointment_at: ISOStringFormat;
+  appointmentAt: ISOStringFormat;
 }
 
 export interface User {
