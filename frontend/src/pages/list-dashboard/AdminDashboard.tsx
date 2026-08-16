@@ -44,8 +44,8 @@ const AdminDashboard = () => {
 
             return (
               <Link
-                to={`/bookings/${booking._id}`}
-                key={booking._id}
+                to={`/bookings/${booking.id}`}
+                key={booking.id}
                 className={`${styles.row} ${isTodayDate && styles.active}`}
               >
                 <span>{booking.name}</span>
