@@ -1,8 +1,10 @@
 import math
+from typing import List
 from app.models.booking import Booking
-from datetime import datetime, timezone
+from datetime import datetime
 from bson import ObjectId
 from app.schemas.booking import BookingResponse
+from app.schemas.appointment import Appointment
 from app.schemas.booking_list import BookingsResponse
 from app.core.security import AuthHandler
 from fastapi import (
@@ -112,7 +114,12 @@ async def update_booking_payment(request: Request, id: str = Path(...)):
     return BookingResponse(booking=booking)
 
 
-@router.get("/dates")
+@router.get(
+    "/dates",
+    response_description="Booked dates retrieved successfully",
+    response_model=List[Appointment],
+    response_model_by_alias=True,
+)
 async def get_booked_dates(
     request: Request, user_data=Depends(auth_handler.auth_wrapper)
 ):
