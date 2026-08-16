@@ -28,7 +28,7 @@ auth_handler = AuthHandler()
     response_description="Booking created successfully",
     response_model=BookingResponse,
     status_code=status.HTTP_201_CREATED,
-    response_model_by_alias=False,
+    response_model_by_alias=True,
 )
 async def create_booking(
     request: Request,
