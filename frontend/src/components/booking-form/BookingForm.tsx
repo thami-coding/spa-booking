@@ -105,8 +105,6 @@ export default function BookingForm() {
       serviceId: service!.id,
     };
     const { booking } = await bookSlot(bookingDetails);
-    console.log(booking);
-    
     navigate(`/checkout/${booking.id}`);
   };
 
