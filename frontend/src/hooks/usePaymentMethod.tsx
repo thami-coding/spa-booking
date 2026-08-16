@@ -17,7 +17,6 @@ export const usePaymentModal = ({
   bookingId,
   guests,
 }: PaymentModalArgs) => {
-  console.log(serviceId);
 
   const { showSwalSuccess, showSwalError } = useAlert();
   const { trigger } = useSWRMutation("/bookings", updateBooking);

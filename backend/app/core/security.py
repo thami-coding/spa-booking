@@ -56,7 +56,6 @@ class AuthHandler:
         self, access_token: Annotated[str | None, Cookie()] = None
     ) -> dict:
         payload = self.auth_wrapper(access_token)
-        print(payload)
         if payload["role"] != Role.ADMIN.value:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
