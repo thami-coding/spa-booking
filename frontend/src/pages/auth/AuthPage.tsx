@@ -56,6 +56,14 @@ const AuthPage = ({ mode }: AuthProps) => {
       ? errDetails
       : Array.isArray(errDetails) && errDetails[0].msg;
 
+  const spinner = isLoading && (
+    <>
+      <Spinner size={15} />
+    </>
+  );
+
+  const buttonText = isLogin ? "Sign In" : "Signup";
+
   return (
     <div className={styles.container}>
       <form className={styles.card} onSubmit={handleSubmit(onSubmit)}>
@@ -112,15 +120,8 @@ const AuthPage = ({ mode }: AuthProps) => {
           type="submit"
           className={`${styles.button} ${isLoading && styles.disabled}`}
         >
-          {isLoading ? (
-            <>
-              <Spinner size={15} /> Loading
-            </>
-          ) : isLogin ? (
-            "Sign In"
-          ) : (
-            "Signup"
-          )}
+          {spinner} {" "}
+          {buttonText}
         </button>
 
         <div className={styles.footer}>

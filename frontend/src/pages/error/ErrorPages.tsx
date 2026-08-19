@@ -1,20 +1,28 @@
 import React from "react";
 import styles from "./ErrorPage.module.css";
 
-interface ErrorPageProps {
-  message?: string;
+interface ErrorStatus {
   statusCode?: number;
   statusText?: string;
   statusLabel?: string;
+}
+
+interface ErrorPageProps {
+  message?: string;
+  errorStatus: ErrorStatus;
   onGoBack?: () => void;
   onReturnHome?: () => void;
 }
 
+const defaultStatus: ErrorStatus = {
+  statusCode: 403,
+  statusText: "Access Denied",
+  statusLabel: "Forbidden Resource",
+};
+//
 export const ErrorPage: React.FC<ErrorPageProps> = ({
   message = "You do not have the necessary administrative privileges to view this page.",
-  statusCode = 403,
-  statusText = "Access Denied",
-  statusLabel = "Forbidden Resource",
+  errorStatus = defaultStatus,
   onGoBack,
   onReturnHome = () => (window.location.href = "/"),
 }) => {
@@ -32,13 +40,11 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.titleGroup}>
-          <h1 className={styles.statusCode}>{statusCode}</h1>
-          <h2 className={styles.statusText}>{statusText}</h2>
-          <p className={styles.statusLabel}>{statusLabel}</p>
+          <h1 className={styles.statusCode}>{errorStatus.statusCode}</h1>
+          <h2 className={styles.statusText}>{errorStatus.statusText}</h2>
+          <p className={styles.statusLabel}>{errorStatus.statusLabel}</p>
         </div>
-
         <p className={styles.message}>{message}</p>
-
         <div className={styles.actions}>
           <button
             onClick={handleGoBack}
