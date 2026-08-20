@@ -92,6 +92,15 @@ export interface Service {
   price: number;
 }
 
-export interface ApiErrorPayload {
+interface AppErrorResponse {
+  error: {
+    field: string;
+    message: string;
+  };
+}
+
+export interface ValidationErrorResponse  {
   detail: string | Array<{ loc: string[]; msg: string; type: string }>;
 }
+
+export type ApiErrorPayload = ValidationErrorResponse | AppErrorResponse

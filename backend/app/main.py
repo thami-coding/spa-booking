@@ -10,6 +10,7 @@ from app.config import BaseConfig
 from pymongo import AsyncMongoClient
 from app.routers.services import router as service_router
 from app.routers.payment import router as payment_router
+from app.lib.errors import AppException
 
 settings = BaseConfig()
 logging.basicConfig(
@@ -58,13 +59,19 @@ app.add_middleware(
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    logger.warning(f"{exc.status_code} {request.method} {request.url.path}: {exc.detail}")
+    logger.warning(
+        f"{exc.status_code} {request.method} {request.url.path}: {exc.detail}"
+    )
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
-@app.exception_handler(Exception)
-async def unhandled_exception_handler(request: Request, exc: Exception):
-    logger.error(f"500 {request.method} {request.url.path}: {exc}", exc_info=True)
-    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+
+@app.exception_handler(AppException)
+async def unhandled_exception_handler(request: Request, exc: AppException):
+    # logger.error(f"{exc.status_code} {request.method} {request.url.path}: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": {"field": exc.field, "message": exc.message}},
+    )
 
 
 @app.get("/")

@@ -9,10 +9,11 @@ from app.schemas.auth import AuthResponse
 from app.schemas.auth import UserIn
 from app.config import BaseConfig
 from app.core.roles import Role
+from app.lib.errors import AppException
 
 router = APIRouter()
 auth_handler = AuthHandler()
-environment = BaseConfig().ENVIRONMENT 
+environment = BaseConfig().ENVIRONMENT
 isProduction = environment == "Production"
 
 
@@ -28,16 +29,19 @@ async def register(request: Request, newUser: UserReg = Body(...)):
 
     email = document["email"]
     password = document["password"]
-    isRegistered = await request.app.state.db.users.find_one({"email": email})
+    user = await request.app.state.db.users.find_one({"email": email})
 
-    if isRegistered:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="email is already registered"
+    if user:
+        raise AppException(
+            message="email is already registered",
+            status_code=status.HTTP_409_CONFLICT,
+            field="email",
         )
 
     document.pop("confirm_password")
     document["role"] = Role.USER.value
     document["password"] = auth_handler.get_password_hash(password)
+
     result = await request.app.state.db.users.insert_one(document)
     user = await request.app.state.db.users.find_one(
         {"_id": result.inserted_id}, {"role": 1, "_id": 1}
@@ -53,19 +57,21 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
     user = await request.app.state.db.users.find_one({"email": email})
 
     if not user:
-        raise HTTPException(
+        raise AppException(
+            message="Invalid username or password",
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
+            field="password"
         )
 
     user_model = User(**user)
     user_clean = jsonable_encoder(user_model, by_alias=False)
     isPasswordValid = auth_handler.verify_password(loginUser.password, user["password"])
-    
+
     if not isPasswordValid:
-        raise HTTPException(
+        raise AppException(
+            message="Invalid username or password",
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
+            field="password",
         )
 
     token = auth_handler.encode_token(str(user["_id"]), user["role"])
@@ -77,7 +83,7 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
         secure=isProduction,
         samesite="none" if isProduction else "lax",
     )
-    
+
     return response
 
 

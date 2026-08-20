@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr, model_validator
+from pydantic import BaseModel, Field, EmailStr, ValidationInfo, field_validator
 from pydantic import BeforeValidator, ConfigDict, BaseModel, Field, EmailStr
 from typing import Annotated, Optional
 
@@ -21,22 +21,28 @@ class UserReg(BaseModel):
         "populate_by_name": True,
     }
 
-    @model_validator(mode="after")
-    def check_passwords_match(self):
-        if self.password != self.confirm_password:
-            raise PydanticCustomError("value_error", "Passwords do not match")
-
-        if not any(char.isdigit() for char in self.password):
+    @field_validator("confirm_password")
+    @classmethod
+    def passwords_match(cls, v: str, info: ValidationInfo) -> str:
+        if "password" in info.data and v != info.data["password"]:
             raise PydanticCustomError(
-                "value_error", "Password must contain at least one number"
+                "password_mismatch",
+                "Passwords do not match",
             )
+        return v
 
-        if not any(char.isupper() for char in self.password):
-            raise PydanticCustomError(
-                "value_error", "Password must contain at least one uppercase letter"
-            )
+        # if not any(char.isdigit() for char in self.password):
+        #     raise PydanticCustomError(
+        #         "password_mismatch", "Password must contain at least one number"
+        #     )
 
-        return self
+        # if not any(char.isupper() for char in self.password):
+        #     raise PydanticCustomError(
+        #         "password_error",
+        #         "Password must contain at least one uppercase letter",
+        #     )
+
+        # return self
 
 
 class AuthResponse(BaseModel):
