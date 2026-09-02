@@ -2,11 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello') {
+        stage('Unit Tests - Backend') {
+            agent {
+                docker {
+                    image:'thamibones/spa-booking:tests'
+                    reuseNode true
+                }
+            }
             steps {
-                echo 'Hello World'
-                sh 'echo Hello "Jenkins"'
-                sh 'date'
+                dir("backend/tests"){
+                   sh 'uv run pytest -vv'
+                }
             }
         }
     }
