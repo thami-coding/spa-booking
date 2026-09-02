@@ -1,6 +1,6 @@
 import logging
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from app.routers.bookings import router as booking_router
 from app.routers.users import router as user_router
 from app.routers.auth import router as auth_router
@@ -17,25 +17,21 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
-logger = logging.getLogger("booking")
 
+logger = logging.getLogger("booking")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if not settings.DB_NAME or not settings.DB_URL:
         raise ValueError("DB_URL and DB_NAME must be set in .env file")
-
     app.state.client = AsyncMongoClient(settings.DB_URL)
     app.state.db = app.state.client[settings.DB_NAME]
-
     try:
         await app.state.client.admin.command("ping")
         print("You have successfully connected to MongoDB!")
     except Exception as e:
         print(f"Connection error: {e}")
-
     yield
-
     await app.state.client.close()
 
 
@@ -74,9 +70,14 @@ async def unhandled_exception_handler(request: Request, exc: AppException):
     )
 
 
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
+
 @app.get("/")
 async def get_root():
-    return {"Message": "Root working!"}
+    return RedirectResponse(url="/docs")
 
 
 app.include_router(booking_router, prefix="/bookings", tags=["bookings"])
