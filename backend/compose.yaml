@@ -1,0 +1,43 @@
+services:
+  server:
+    build:
+      context: .
+    environment:
+      - DB_URL=${DB_URL}
+      - DB_NAME=spa_booking
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8000:80"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    develop:
+      watch:
+        - action: sync
+          path: ./app
+          target: /code/app
+        - action: rebuild
+          path: pyproject.toml
+        - action: rebuild
+          path: uv.lock
+
+  mongodb:
+    image: mongodb/mongodb-atlas-local
+    hostname: mongodb
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=admin
+      - MONGODB_INITDB_ROOT_PASSWORD=P@ssword!
+    ports:
+      - 27017:27017
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - ./db-dump:/data/dump
+      - db:/data/db
+      - configdb:/data/configdb
+      - mongot:/data/mongot
+
+volumes:
+  db:
+  configdb:
+  mongot:
