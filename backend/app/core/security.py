@@ -1,13 +1,14 @@
 import datetime
-from enum import Enum
 from typing import Annotated
 import jwt
 from fastapi import Cookie, Depends, HTTPException, status
 from passlib.context import CryptContext
 from app.config import BaseConfig
 from app.core.roles import Role
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 settings = BaseConfig()
+security = HTTPBearer(auto_error=False)
 
 
 class AuthHandler:
@@ -45,17 +46,37 @@ class AuthHandler:
             )
 
     def auth_wrapper(
-        self, access_token: Annotated[str | None, Cookie()] = None
+        self,
+        access_token: Annotated[str | None, Cookie()] = None,
+        credentials: Annotated[
+            HTTPAuthorizationCredentials | None, Depends(security)
+        ] = None,
     ) -> dict:
-        if not access_token:
+        token = None
+        if credentials:
+            token = credentials.credentials
+        elif access_token:
+            token = access_token
+            
+        if not token:
             raise HTTPException(status_code=401, detail="Not authenticated")
 
-        return self.decode_token(access_token)
+        return self.decode_token(token)
 
     def admin_wrapper(
-        self, access_token: Annotated[str | None, Cookie()] = None
+        self,
+        access_token: Annotated[str | None, Cookie()] = None,
+        credentials: Annotated[
+            HTTPAuthorizationCredentials | None, Depends(security)
+        ] = None,
     ) -> dict:
-        payload = self.auth_wrapper(access_token)
+        token = None
+        if credentials:
+            token = credentials.credentials
+        elif access_token:
+            token = access_token
+        payload = self.auth_wrapper(token)
+
         if payload["role"] != Role.ADMIN.value:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
