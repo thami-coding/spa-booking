@@ -5,7 +5,7 @@ pipeline {
         stage('Unit Tests - Backend') {
             agent {
                 docker {
-                    image:'thamibones/spa-booking:tests'
+                    image 'thamibones/spa-booking:tests'
                     reuseNode true
                 }
             }
