@@ -24,7 +24,7 @@ class Booking(BaseModel):
     }
 
 
-class CreatedBooking(BaseModel):
+class BookingResponse(BaseModel):
     id: Optional[PyObjectId] = Field(
         default=None,
         validation_alias="_id",
@@ -34,22 +34,12 @@ class CreatedBooking(BaseModel):
     appointment_at: datetime = Field(...)
     service_id: str = Field(...)
     is_paid: bool = Field(default=False)
-    amount: str = Field(...)
+    amount: int = Field(...)
     name: str = Field(..., min_length=5)
     email: EmailStr = Field(...)
     phone: str = Field(..., min_length=10, max_length=10)
     guests: int = Field(..., gt=0)
     request: Optional[str] = None
-
-    model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
-
-
-class BookingResponse(BaseModel):
-    booking: CreatedBooking
 
     model_config = ConfigDict(
         alias_generator=to_camel,
