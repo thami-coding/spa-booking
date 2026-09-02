@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from pydantic import BeforeValidator, ConfigDict
-from typing import Annotated, Optional, List
+from pydantic import BeforeValidator
+from typing import Annotated, Optional
 from pydantic.alias_generators import to_camel
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
