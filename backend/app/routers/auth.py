@@ -54,6 +54,7 @@ async def register(request: Request, newUser: UserReg = Body(...)):
 async def login(request: Request, loginUser: UserIn = Body(...)):
     document = loginUser.model_dump()
     email = document["email"]
+    password = document["password"]
     user = await request.app.state.db.users.find_one({"email": email})
 
     if not user:
@@ -65,7 +66,7 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
 
     user_model = User(**user)
     user_clean = jsonable_encoder(user_model, by_alias=False)
-    isPasswordValid = auth_handler.verify_password(loginUser.password, user["password"])
+    isPasswordValid = auth_handler.verify_password(password, user["password"])
 
     if not isPasswordValid:
         raise AppException(

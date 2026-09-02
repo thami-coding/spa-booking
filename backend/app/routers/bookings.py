@@ -1,12 +1,11 @@
 import math
-from typing import List
 from app.models.booking import Booking
 from datetime import datetime
 from bson import ObjectId
 from app.schemas.booking import BookingResponse
-from app.schemas.appointment import Appointment
 from app.schemas.booking_list import BookingsResponse
-from app.core.security import AuthHandler
+from app.schemas.booked_dates_response import BookedDates
+from app.auth import auth_handler
 from fastapi import (
     APIRouter,
     status,
@@ -19,8 +18,6 @@ from fastapi import (
 )
 
 router = APIRouter()
-
-auth_handler = AuthHandler()
 
 
 @router.post(
@@ -56,20 +53,26 @@ async def create_booking(
     document.pop("booked_time")
 
     service_id = document["service_id"]
+    print(service_id)
     service = await request.app.state.db.services.find_one(
         {"_id": ObjectId(service_id)}
     )
+
+    if service is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"service with id: {service_id} does not exist"
+        )
+    
     price = service["price"]
     guests = document["guests"]
     amount = int(guests) * int(price)
     document["amount"] = str(amount)
     result = await request.app.state.db.bookings.insert_one(document)
-
     created_booking = await request.app.state.db.bookings.find_one(
         {"_id": result.inserted_id}
     )
 
-    return BookingResponse(booking=created_booking)
+    return BookingResponse(**created_booking)
 
 
 @router.get(
@@ -91,7 +94,6 @@ async def get_bookings(
         .limit(limit)
         .skip((page - 1) * limit)
     )
-
     total = await request.app.state.db.bookings.count_documents({})
     totalPages = math.ceil(total / limit)
 
@@ -111,20 +113,20 @@ async def update_booking_payment(request: Request, id: str = Path(...)):
 
     booking = await request.app.state.db.bookings.find_one({"_id": ObjectId(id)})
 
-    return BookingResponse(booking=booking)
+    return BookingResponse(**booking)
 
 
 @router.get(
     "/dates",
     response_description="Booked dates retrieved successfully",
-    response_model=List[Appointment],
+    response_model=BookedDates,
     response_model_by_alias=True,
 )
 async def get_booked_dates(
     request: Request, user_data=Depends(auth_handler.auth_wrapper)
 ):
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    booked_dates = []
+    dates = []
     async for doc in request.app.state.db.bookings.find(
         {
             "appointment_at": {"$gte": today},
@@ -132,9 +134,9 @@ async def get_booked_dates(
         },  # TODO: CHANGE True to see results
         {"appointment_at": 1, "_id": 0},
     ):
-        booked_dates.append(doc)
+        dates.append(doc)
 
-    return booked_dates
+    return BookedDates(booked_dates=dates)
 
 
 @router.get(
@@ -147,4 +149,9 @@ async def get_booking_by_id(request: Request, id: str = Path(...)):
     booking = await request.app.state.db.bookings.find_one(
         {"_id": ObjectId(id)}, {"is_paid": 0}
     )
-    return BookingResponse(booking=booking)
+    if booking is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="booking does not exist"
+        )
+
+    return BookingResponse(**booking)
