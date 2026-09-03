@@ -54,9 +54,11 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            expression {
-                return env.GIT_BRANCH == 'origin/master'
+        stage('Deploy Production') {
+            when {
+                expression {
+                    return env.GIT_BRANCH == 'origin/master'
+                }
             }
             agent {
                 docker {
