@@ -7,7 +7,6 @@ pipeline {
                 docker {
                     image 'thamibones/spa-booking:tests'
                     reuseNode true
-                    alwaysPull true
                 }
             }
             environment {
