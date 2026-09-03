@@ -44,6 +44,8 @@ pipeline {
             }
             environment {
                 HOME = '/tmp'
+                DB_URL = credentials('DB_URL')
+                DB_NAME = credentials('DB_NAME')
             }          
             steps {
                 dir("backend/tests_api") {
