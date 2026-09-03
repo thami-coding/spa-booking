@@ -15,7 +15,7 @@ pipeline {
             }
             steps {
                 dir("backend/tests"){
-                   sh 'uv run --no-cache pytest -vv'
+                   sh 'uv run pytest -vv'
                 }
             }
         }
