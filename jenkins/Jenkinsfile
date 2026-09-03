@@ -10,6 +10,9 @@ pipeline {
                     alwaysPull true
                 }
             }
+            environment {
+                HOME = '/tmp'
+            }
             steps {
                 dir("backend/tests"){
                    sh 'uv run --no-cache pytest -vv'
