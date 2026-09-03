@@ -30,6 +30,7 @@ pipeline {
             steps {
                 dir("backend") {
                     sh 'docker compose up --build --wait'
+                    sh 'docker compose logs server'
                 }    
             }
         }
