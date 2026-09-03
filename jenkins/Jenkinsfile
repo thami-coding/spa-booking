@@ -38,7 +38,7 @@ pipeline {
                 }    
             }
             post {
-                always {
+                failure  {
                     dir("backend") {
                         sh 'docker compose logs server || true'
                         sh 'docker compose logs mongodb || true'
@@ -86,8 +86,10 @@ pipeline {
             }
             steps {
                 checkout scm
-                sh 'uv sync --frozen'
-                sh 'uv run fastapi deploy'
+                dir("backend") {
+                    sh 'uv sync --frozen'
+                    sh 'uv run fastapi deploy'
+                }
             }
         }
     }
