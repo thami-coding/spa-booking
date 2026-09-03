@@ -53,5 +53,26 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            agent {
+                docker {
+                    image 'ghcr.io/astral-sh/uv:python3.12-bookworm-slim'
+                    reuseNode true
+                }
+            }
+            environment {
+                FASTAPI_CLOUD_TOKEN = credentials('fastapi-cloud-token')
+                FASTAPI_CLOUD_APP_ID = credentials('fastapi-cloud-app-id')
+                HOME = '/tmp'
+            }
+            steps {
+                checkout scm
+                sh 'uv run fastapi deploy'
+            }
+        }
     }
 }
