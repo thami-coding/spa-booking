@@ -34,6 +34,14 @@ pipeline {
                 }    
             }
         }
+        post {
+            always {
+                dir("backend") {
+                    sh 'docker compose logs server || true'
+                    sh 'docker compose logs mongodb || true'
+                }
+            }
+        }
 
         stage("API Tests") {
             agent {
