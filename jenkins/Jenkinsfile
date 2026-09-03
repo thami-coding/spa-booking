@@ -33,12 +33,12 @@ pipeline {
                     sh 'docker compose logs server'
                 }    
             }
-        }
-        post {
-            always {
-                dir("backend") {
-                    sh 'docker compose logs server || true'
-                    sh 'docker compose logs mongodb || true'
+            post {
+                always {
+                    dir("backend") {
+                        sh 'docker compose logs server || true'
+                        sh 'docker compose logs mongodb || true'
+                    }
                 }
             }
         }
