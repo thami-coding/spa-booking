@@ -29,8 +29,26 @@ pipeline {
             }
             steps {
                 dir("backend") {
-                    sh 'docker compose up --build -d'
+                    sh 'docker compose up --build --wait'
                 }    
+            }
+        }
+
+        stage("API Tests") {
+            agent {
+                docker {
+                    image 'thamibones/spa-booking:tests'
+                    reuseNode true
+                    args '-u 0 --network=host'
+                }
+            }
+            environment {
+                HOME = '/tmp'
+            }          
+            steps {
+                dir("backend/tests_api") {
+                    sh 'uv run pytest -vv'
+                }
             }
         }
     }
