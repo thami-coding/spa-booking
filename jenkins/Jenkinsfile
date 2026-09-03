@@ -27,6 +27,10 @@ pipeline {
                     args '-v /var/run/docker.sock:/var/run/docker.sock -u 0'
                 }
             }
+            environment {
+                DB_URL = credentials('DB_URL')
+                DB_NAME = credentials('DB_NAME')
+            }
             steps {
                 dir("backend") {
                     sh 'docker compose up --build --wait'
