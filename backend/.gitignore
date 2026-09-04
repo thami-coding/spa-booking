@@ -5,6 +5,7 @@ __pycache__/
 *$py.class
 *.so
 .Python
+ db-dump/
 
 # --- Environments (uv & venv) ---
 .venv/
