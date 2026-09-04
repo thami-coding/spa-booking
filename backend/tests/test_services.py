@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 from bson import ObjectId
 from fastapi import HTTPException
 
-from app.routers.services import get_service  # adjust import to actual location
+from app.routers.services import get_service
 
 
 def make_mock_request(find_one_return_value):
