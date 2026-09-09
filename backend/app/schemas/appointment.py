@@ -5,7 +5,7 @@ from pydantic import Field, BaseModel
 from pydantic.alias_generators import to_camel
 
 
-class AppointmentDate(BaseModel):
+class BookedDates(BaseModel):
     appointment_at: datetime = Field(...)
 
     model_config = {
@@ -14,8 +14,9 @@ class AppointmentDate(BaseModel):
     }
 
 
-class BookedDates(BaseModel):
-    booked_dates: List[AppointmentDate]
+class Appointments(BaseModel):
+    appointments: List[BookedDates]
+
     model_config = {
         "alias_generator": to_camel,
         "populate_by_name": True,

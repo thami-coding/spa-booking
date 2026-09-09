@@ -1,11 +1,6 @@
 import math
-from app.models.booking import Booking
 from datetime import datetime
 from bson import ObjectId
-from app.schemas.booking import BookingResponse
-from app.schemas.booking_list import BookingsResponse
-from app.schemas.booked_dates_response import BookedDates
-from app.auth import auth_handler
 from fastapi import (
     APIRouter,
     status,
@@ -16,6 +11,12 @@ from fastapi import (
     Depends,
     HTTPException,
 )
+
+from app.schemas.booking import BookingIn
+from app.schemas.appointment import Appointments
+from app.schemas.booking import BookingResponse, BookingsResponse
+from app.auth import auth_handler
+from app.lib.validate_objectId import get_valid_object_id
 
 router = APIRouter()
 
@@ -30,44 +31,44 @@ router = APIRouter()
 async def create_booking(
     request: Request,
     user_data=Depends(auth_handler.auth_wrapper),
-    booking: Booking = Body(...),
+    booking: BookingIn = Body(...),
 ):
-    document = booking.model_dump(exclude={"id"})
-    combined_datetime = datetime.combine(
-        document["booked_date"], document["booked_time"]
+    booking_dict = booking.model_dump()
+    service_id = booking_dict["service_id"]
+    appointment = datetime.combine(
+        booking_dict["booked_date"], booking_dict["booked_time"]
     )
 
-    bookingExists = await request.app.state.db.bookings.find_one(
-        {"appointment_at": combined_datetime}
+    booking = await request.app.state.db.bookings.find_one(
+        {"appointment_at": appointment}
     )
-
-    if bookingExists:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="date and time already booked"
-        )
-
-    document["appointment_at"] = combined_datetime
-    document["user_id"] = user_data["user_id"]
-    document["is_paid"] = False
-    document.pop("booked_date")
-    document.pop("booked_time")
-
-    service_id = document["service_id"]
-    print(service_id)
     service = await request.app.state.db.services.find_one(
         {"_id": ObjectId(service_id)}
     )
 
     if service is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"service with id: {service_id} does not exist"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"service with id: {service_id} does not exist",
         )
-    
+
+    if booking is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="date and time already booked"
+        )
+
+    booking_dict["appointment_at"] = appointment
+    booking_dict["user_id"] = user_data["user_id"]
+    booking_dict["is_paid"] = False
+    booking_dict.pop("booked_date")
+    booking_dict.pop("booked_time")
+
     price = service["price"]
-    guests = document["guests"]
+    guests = booking_dict["guests"]
     amount = int(guests) * int(price)
-    document["amount"] = str(amount)
-    result = await request.app.state.db.bookings.insert_one(document)
+    booking_dict["amount"] = str(amount)
+    result = await request.app.state.db.bookings.insert_one(booking_dict)
+
     created_booking = await request.app.state.db.bookings.find_one(
         {"_id": result.inserted_id}
     )
@@ -79,7 +80,7 @@ async def create_booking(
     "",
     response_description="List of bookings retrieved successfully",
     response_model=BookingsResponse,
-    response_model_by_alias=False,
+    response_model_by_alias=True,
 )
 async def get_bookings(
     request: Request,
@@ -107,19 +108,26 @@ async def get_bookings(
 
 @router.patch("/{id}")
 async def update_booking_payment(request: Request, id: str = Path(...)):
+    _id = get_valid_object_id(id)
+    booking = await request.app.state.db.bookings.find_one({"_id":_id})
+
+    if booking is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"booking with id: {id} does not exist"
+        )
+    
     result = await request.app.state.db.bookings.update_one(
-        {"_id": ObjectId(id)}, {"$set": {"is_paid": True}}
+        {"_id":_id}, {"$set": {"is_paid": True}}
     )
+    paid_booking = await request.app.state.db.bookings.find_one({"_id":_id})
 
-    booking = await request.app.state.db.bookings.find_one({"_id": ObjectId(id)})
-
-    return BookingResponse(**booking)
+    return BookingResponse(**paid_booking)
 
 
 @router.get(
     "/dates",
     response_description="Booked dates retrieved successfully",
-    response_model=BookedDates,
+    response_model=Appointments,
     response_model_by_alias=True,
 )
 async def get_booked_dates(
@@ -127,6 +135,7 @@ async def get_booked_dates(
 ):
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     dates = []
+
     async for doc in request.app.state.db.bookings.find(
         {
             "appointment_at": {"$gte": today},
@@ -136,7 +145,7 @@ async def get_booked_dates(
     ):
         dates.append(doc)
 
-    return BookedDates(booked_dates=dates)
+    return Appointments(appointments=dates)
 
 
 @router.get(
@@ -149,6 +158,7 @@ async def get_booking_by_id(request: Request, id: str = Path(...)):
     booking = await request.app.state.db.bookings.find_one(
         {"_id": ObjectId(id)}, {"is_paid": 0}
     )
+
     if booking is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="booking does not exist"

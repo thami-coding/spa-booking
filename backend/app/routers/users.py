@@ -1,29 +1,27 @@
 from fastapi import APIRouter
 from fastapi import APIRouter, Body, HTTPException, Request, Depends
-from fastapi.encoders import jsonable_encoder
-from app.models.user import User
-from bson import ObjectId
+
+from app.lib.validate_objectId import get_valid_object_id
+from app.schemas.user import UserResponse
 from app.core.security import AuthHandler
 
 router = APIRouter()
-
 auth_handler = AuthHandler()
 
 
 @router.get(
     "/me",
     response_description="User retrieved successfully",
-    response_model_by_alias=False,
+    response_model_by_alias=True,
+    response_model=UserResponse,
 )
 async def get_user(request: Request, user_data=Depends(auth_handler.auth_wrapper)):
-    user_id = ObjectId(user_data["user_id"])
-    user_db = await request.app.state.db.users.find_one(
+    user_id = get_valid_object_id(user_data["user_id"])
+    user = await request.app.state.db.users.find_one(
         {"_id": user_id}, {"password": 0}
     )
-    user_model = User(**user_db)
-    user = jsonable_encoder(user_model, by_alias=False)
-
-    return {"user": user}
+    print(user)
+    return  UserResponse(**user)
 
 
 @router.get("/")

@@ -1,7 +1,7 @@
-import requests
 import hashlib
 import urllib.parse
 import httpx
+
 
 def dataToString(dataArray, passPhrase=""):
     pfParamString = ""

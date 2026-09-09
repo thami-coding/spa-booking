@@ -1,23 +1,45 @@
 from pydantic import BaseModel, Field, EmailStr, ValidationInfo, field_validator
 from pydantic import BeforeValidator, ConfigDict, BaseModel, Field, EmailStr
 from typing import Annotated, Optional
-
+from pydantic.alias_generators import to_camel, to_snake
 from pydantic_core import PydanticCustomError
-from app.schemas.role import Role
-from pydantic.alias_generators import to_camel
+
+from app.core.roles import Role
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
 
-class UserReg(BaseModel):
-    name: str = Field(..., min_length=5, max_length=50)
+class User(BaseModel):
+    id: PyObjectId = Field(
+        ...,
+        validation_alias="_id",
+        serialization_alias="id",
+    )
+    full_name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr = Field(...)
+    phone: Optional[str] = ""
+    role: Role = Field(...)
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
+
+
+class UserLogin(BaseModel):
+    email: EmailStr = Field(...)
+    password: str = Field(...)
+
+
+class UserReg(BaseModel):
+    full_name: str = Field(..., min_length=5, max_length=50)
+    email: EmailStr = Field(...)
+    phone: str = Field(...)
     password: str = Field(...)
     confirm_password: str = Field(...)
 
     model_config = {
-        "alias_generator": to_camel,
-        # Allows the model to still accept standard snake_case if sent
+        "alias_generator": to_snake,
         "populate_by_name": True,
     }
 
@@ -31,26 +53,36 @@ class UserReg(BaseModel):
             )
         return v
 
-        # if not any(char.isdigit() for char in self.password):
-        #     raise PydanticCustomError(
-        #         "password_mismatch", "Password must contain at least one number"
-        #     )
-
-        # if not any(char.isupper() for char in self.password):
-        #     raise PydanticCustomError(
-        #         "password_error",
-        #         "Password must contain at least one uppercase letter",
-        #     )
-
-        # return self
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v):
+        if not v.isdigit() or len(v) != 10:
+            raise ValueError("Phone number must be exactly 10 digits")
+        return v
 
 
-class AuthResponse(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
-    role: Role
-    model_config = ConfigDict(populate_by_name=True)
+class LoginResponse(BaseModel):
+    access_token: str = Field(...)
+    user: Optional[User] = Field(default=None)
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
 
 
-class UserIn(BaseModel):
+class RegisterResponse(BaseModel):
+    id: PyObjectId = Field(
+        ...,
+        validation_alias="_id",
+        serialization_alias="id",
+    )
+    full_name: str = Field(..., min_length=3, max_length=100)
     email: EmailStr = Field(...)
-    password: str = Field(...)
+    phone: Optional[str] = ""
+    role: Role = Field(...)
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )

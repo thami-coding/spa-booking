@@ -1,14 +1,14 @@
 import pytest
 import pytest_asyncio
-from fastapi.testclient import TestClient
-from app.main import app
 from pymongo import AsyncMongoClient
+from fastapi.testclient import TestClient
+from datetime import datetime
+from app.main import app
 from app.config import BaseConfig
 from app.auth import auth_handler
-from app.schemas.booking_list import BookingsResponse, Booking
-from app.schemas.booked_dates_response import BookedDates
+from app.schemas.booking import BookingsResponse, Booking
+from app.schemas.appointment import Appointments
 from app.seed_data import bookings_data
-from datetime import datetime
 
 settings = BaseConfig()
 
@@ -90,7 +90,7 @@ def test_get_booked_dates_returns_200(client):
     response = client.get("/bookings/dates")
 
     assert response.status_code == 200
-    assert BookedDates.model_validate(response.json())
+    assert Appointments.model_validate(response.json())
 
 
 # def test_delete_booking_by_id_valid_id_returns_204(client):

@@ -61,7 +61,7 @@ pipeline {
                 DB_NAME = credentials('DB_NAME')
             }          
             steps {
-                dir("backend/tests_api") {
+                dir("backend/tests-api") {
                     sh 'uv run pytest -vv'
                 }
             }

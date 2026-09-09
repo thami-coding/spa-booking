@@ -6,7 +6,7 @@ from app.auth import auth_handler
 from pymongo import AsyncMongoClient
 from app.config import BaseConfig
 from app.seed_data import all_services
-from app.schemas.services_response import ServicesResponse
+from app.schemas.service import ServicesResponse
 
 settings = BaseConfig()
 

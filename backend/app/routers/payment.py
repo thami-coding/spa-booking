@@ -2,14 +2,14 @@ from fastapi import APIRouter, Request, Body
 from app.config import BaseConfig
 from app.lib.payment_utils import generatePaymentIdentifier, generateSignature, dataToString
 from bson import ObjectId
-from app.schemas.payment import Payment
+from app.schemas.payment import PaymentIn
 
 router = APIRouter()
 settings = BaseConfig()
 
 
 @router.post("")
-async def get_payment_identifier(request: Request, body: Payment = Body(...)):
+async def get_payment_identifier(request: Request, body: PaymentIn = Body(...)):
     email = body.email
     id = body.service_id
     guests = body.guests
