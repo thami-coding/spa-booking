@@ -7,8 +7,14 @@ import AdminDashboard from "../pages/list-dashboard/AdminDashboard";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AdminProtectedRoute from "../components/AdminProtectedRoute";
-import ErrorPage from "../pages/error/ErrorPages";
+import ErrorPage, { type ErrorDetails } from "../pages/error/ErrorPages";
 
+const error: ErrorDetails = {
+  statusCode:404,
+        statusText:"Page Not Found",
+        statusLabel:"Missing Resource",
+        message:"Sorry, the page you are looking for does not exist or has been moved."
+}
 export const router = createBrowserRouter([
   { index: true, element: <HomePage /> },
   { path: "login", element: <AuthPage mode="login" /> },
@@ -32,10 +38,7 @@ export const router = createBrowserRouter([
     path: "*",
     element: (
       <ErrorPage
-        statusCode={404}
-        statusText="Page Not Found"
-        statusLabel="Missing Resource"
-        message="Sorry, the page you are looking for does not exist or has been moved."
+      error={error}
       />
     ),
   },

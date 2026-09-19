@@ -1,28 +1,28 @@
 import React from "react";
 import styles from "./ErrorPage.module.css";
 
-interface ErrorStatus {
+export interface ErrorDetails {
   statusCode?: number;
   statusText?: string;
   statusLabel?: string;
+  message?:string;
 }
 
 interface ErrorPageProps {
-  message?: string;
-  errorStatus: ErrorStatus;
+  error?: ErrorDetails;
   onGoBack?: () => void;
   onReturnHome?: () => void;
 }
 
-const defaultStatus: ErrorStatus = {
+const defaultStatus: ErrorDetails = {
   statusCode: 403,
   statusText: "Access Denied",
   statusLabel: "Forbidden Resource",
+  message: "You do not have the necessary administrative privileges to view this page.",
 };
 //
 export const ErrorPage: React.FC<ErrorPageProps> = ({
-  message = "You do not have the necessary administrative privileges to view this page.",
-  errorStatus = defaultStatus,
+  error = defaultStatus,
   onGoBack,
   onReturnHome = () => (window.location.href = "/"),
 }) => {
@@ -40,11 +40,11 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.titleGroup}>
-          <h1 className={styles.statusCode}>{errorStatus.statusCode}</h1>
-          <h2 className={styles.statusText}>{errorStatus.statusText}</h2>
-          <p className={styles.statusLabel}>{errorStatus.statusLabel}</p>
+          <h1 className={styles.statusCode}>{error.statusCode}</h1>
+          <h2 className={styles.statusText}>{error.statusText}</h2>
+          <p className={styles.statusLabel}>{error.statusLabel}</p>
         </div>
-        <p className={styles.message}>{message}</p>
+        <p className={styles.message}>{error.message}</p>
         <div className={styles.actions}>
           <button
             onClick={handleGoBack}
