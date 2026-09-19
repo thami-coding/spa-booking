@@ -37,8 +37,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
-origins = ["https://spa-booking031.netlify.app"]
+frontend_url = settings.FRONTEND_URL
+origins = [frontend_url]
 
 
 if settings.ENVIRONMENT == "Development":
