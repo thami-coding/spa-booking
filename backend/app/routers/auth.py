@@ -50,7 +50,11 @@ async def register(request: Request, newUser: UserReg = Body(...)):
     return user
 
 
-@router.post("/login", response_description="Login user")
+@router.post(
+    "/login",
+    response_description="Login user",
+    response_model_by_alias=False,
+)
 async def login(request: Request, loginUser: UserIn = Body(...)):
     document = loginUser.model_dump()
     email = document["email"]
@@ -61,9 +65,9 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
         raise AppException(
             message="Invalid username or password",
             status_code=status.HTTP_401_UNAUTHORIZED,
-            field="password"
+            field="password",
         )
-
+    print(user)
     user_model = User(**user)
     user_clean = jsonable_encoder(user_model, by_alias=False)
     isPasswordValid = auth_handler.verify_password(password, user["password"])

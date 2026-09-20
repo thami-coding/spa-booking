@@ -9,9 +9,9 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class User(BaseModel):
     id: PyObjectId = Field(..., alias="_id")
-    name: str = Field(..., min_length=2, max_length=100)
+    full_name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr = Field(...)
-    phone: Optional[str] = ""
+    phone: Optional[str] = None
     role: Role = Field(...)
     created_at: datetime = Field(default_factory=datetime.now)
 
