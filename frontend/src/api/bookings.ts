@@ -6,11 +6,13 @@ export const createBooking = async (
   { arg }: { arg: FormBookingDetails },
 ): Promise<BookingResponse> => {
   const res = await api.post(url, arg);
+
   return res.data;
 };
 
 export const getBooking = async (url: string) => {
   const { data } = await api.get(url);
+  
   return data;
 };
 
@@ -29,7 +31,7 @@ export const getServices = async (url: string):Promise<Service[]> => {
   return data.services;
 };
 
-export const getBookedDates = async (url: string):Promise<BookedDates[]> => {
+export const getBookedDates = async (url: string):Promise<BookedDates> => {
   const { data } = await api.get(url);
   return data;
 };

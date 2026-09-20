@@ -24,10 +24,10 @@
 
 .title {
   margin: 0;
-  font-size: 28px;
   color: #000000ba;
-  font-size: 1rem;
+  font-size: 2rem;
   font-weight: normal;
+
 }
 
 .subtitle {
@@ -128,4 +128,10 @@
   margin-bottom: 25px;
   font-size: 0.7rem;
   margin-left: 0.4rem;
+}
+
+.err {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }

@@ -8,9 +8,9 @@ import type { FormBookingDetails, FormFieldsData } from "../../types/types";
 import { getServices } from "../../api/bookings";
 import { format, parse } from "date-fns";
 import { useAlert } from "../../hooks/useAlert";
-import { useEffect } from "react";
 import { useUser } from "../../hooks/authHooks";
 import { useBookedDates, useCreateBooking } from "../../hooks/bookingHooks";
+import axios from "axios";
 
 export default function BookingForm() {
   const navigate = useNavigate();
@@ -21,22 +21,12 @@ export default function BookingForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormBookingDetails>();
-  const {
-    trigger: bookSlot,
-    isMutating: isBooking,
-    error: bookingError,
-  } = useCreateBooking();
-  const bookedDates = useBookedDates();
+  const { trigger: bookSlot, isMutating: isBooking } = useCreateBooking();
+  const { data, isLoading: loadingSlots } = useBookedDates();
   const { isLoading: isLoadingUser, data: userInfo } = useUser();
   const services = useSWR("/services", getServices);
 
-  useEffect(() => {
-    if (bookingError?.status === "409") {
-      showSwalError("Sorry! This time slot is already booked");
-    }
-  }, [bookingError, showSwalError]);
-
-  if (isLoadingUser || bookedDates.isLoading) {
+  if (isLoadingUser || loadingSlots) {
     return (
       <div className={styles.SpinnerContainer}>
         <Spinner />
@@ -48,14 +38,16 @@ export default function BookingForm() {
   const currentYear = new Date().getFullYear();
   const endOfYear = `${currentYear}-12-31`;
 
-  const bookings: Record<string, string[]> = {};
-  Array.from(bookedDates?.data || []).forEach((bookedDate) => {
-    const [date, time] = bookedDate.appointmentAt.split("T");
-    const dateObj = parse(time, "HH:mm:ss", new Date());
-    const formatTime = format(dateObj, "HH:mm");
+  const appointments: Record<string, string[]> = {};
+  const bookedSlots = data?.bookedDates;
 
-    if (!bookings[date]) bookings[date] = [];
-    bookings[date].push(formatTime);
+  Array.from(bookedSlots || []).forEach((slot) => {
+    const [date, time] = slot.appointmentAt.split("T");
+    const dateObj = parse(time, "HH:mm:ss", new Date());
+    const formatedTime = format(dateObj, "HH:mm");
+
+    if (!appointments[date]) appointments[date] = [];
+    appointments[date].push(formatedTime);
   });
 
   const bookingTimes = [
@@ -95,7 +87,7 @@ export default function BookingForm() {
   const serviceId = watch("service");
   const guestNumber = watch("guests");
   const service = services.data?.find((service) => service.id === serviceId);
-  const totalCost = (service?.price ?? 0) * guestNumber;
+  const totalCost = service?.price ? service.price * guestNumber : 0;
 
   const onSubmit: SubmitHandler<FormBookingDetails> = async (bookingData) => {
     const { id } = userInfo;
@@ -104,11 +96,29 @@ export default function BookingForm() {
       userId: id,
       serviceId: service!.id,
     };
-    const { booking } = await bookSlot(bookingDetails);
-    navigate(`/checkout/${booking.id}`);
+    let newBooking = null;
+    try {
+      newBooking = await bookSlot(bookingDetails);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 409) {
+          showSwalError("error", "This time slot is already booked");
+          return;
+        } else if (!status || status >= 500) {
+          showSwalError("question");
+          return;
+        }
+      }
+      console.log(error);
+
+      return;
+    }
+
+    navigate(`/checkout/${newBooking.id}`);
   };
 
-  const bookedTimes = bookings[bookedDate] || [];
+  const bookedTimes = appointments[bookedDate] || [];
 
   return (
     <form className={styles.bookingForm} onSubmit={handleSubmit(onSubmit)}>

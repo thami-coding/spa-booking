@@ -35,11 +35,12 @@ const AuthPage = ({ mode }: AuthProps) => {
   const spinner = isLoading && <Spinner size={15} />;
   const buttonText = isLoginMode ? "Sign In" : "Signup";
   const toggleLabel = isLoginMode ? "signup" : "login";
+  let isServerError = false;
 
   const toggleShowPassword = showPassword ? (
-    <Eye size={16} />
+    <Eye size={14} />
   ) : (
-    <EyeOff size={16} />
+    <EyeOff size={14} />
   );
 
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
@@ -55,12 +56,26 @@ const AuthPage = ({ mode }: AuthProps) => {
     }
   };
 
+  if (err) {
+    const status = err?.response?.status;
+    isServerError = status === undefined || status >= 500;
+  }
+  
   return (
     <div className={styles.container}>
       <form className={styles.card} onSubmit={handleSubmit(onSubmit)}>
-        {isLoginMode && <h3 className={styles.title}>Welcome Back</h3>}
+        {isServerError && !isLoginMode && (
+          <p className={isServerError ? styles.err : styles.subtitle}>
+            Something went wrong. Please try again later
+          </p>
+        )}
+        {isLoginMode && <p className={styles.title}>Welcome Back</p>}
         {isLoginMode && (
-          <p className={styles.subtitle}>Please sign in to continue</p>
+          <p className={isServerError ? styles.err : styles.subtitle}>
+            {isServerError
+              ? "Something went wrong. Please try again later"
+              : "Please sign in to continue"}
+          </p>
         )}
         {!isLoginMode && (
           <div className={styles.inputGroup}>

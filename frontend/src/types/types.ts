@@ -59,7 +59,17 @@ export interface Booking {
 }
 
 export interface BookingResponse {
-  booking: Booking;
+  id: string;
+  userId: string;
+  appointmentAt: string;
+  serviceId: string;
+  isPaid: boolean;
+  amount: string;
+  name: string;
+  email: string;
+  phone: string;
+  guests: number;
+  request: string;
 }
 
 export interface BookingsResponse {
@@ -70,7 +80,7 @@ export interface BookingsResponse {
 }
 
 export interface BookedDates {
-  appointmentAt: ISOStringFormat;
+  bookedDates: { appointmentAt: ISOStringFormat }[];
 }
 
 export interface User {
@@ -99,8 +109,8 @@ interface AppErrorResponse {
   };
 }
 
-export interface ValidationErrorResponse  {
+export interface ValidationErrorResponse {
   detail: string | Array<{ loc: string[]; msg: string; type: string }>;
 }
 
-export type ApiErrorPayload = ValidationErrorResponse | AppErrorResponse
+export type ApiErrorPayload = ValidationErrorResponse | AppErrorResponse;

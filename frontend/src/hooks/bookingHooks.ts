@@ -8,7 +8,7 @@ export const useBookedDates = () => {
 };
 
 export const useCreateBooking = () => {
-  const { trigger, isMutating, error } = useSWRMutation(
+  const { trigger, isMutating, error, } = useSWRMutation(
     "/bookings",
     createBooking,
   );

@@ -1,0 +1,80 @@
+.root {
+  --ink: #000;
+  --paper: #fff;
+  --alert: #c8102e;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  font-family: inherit;
+  text-align: left;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background: var(--alert);
+  color: var(--paper);
+  border-radius: 4px;
+}
+
+.title {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.message {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  margin-top: 1.75rem;
+  padding: 0 1.25rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 120ms, color 120ms;
+}
+
+.home:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.home:focus-visible {
+  outline: 3px solid var(--alert);
+  outline-offset: 3px;
+}
+
+@media (max-width: 30rem) {
+  .home {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home {
+    transition: none;
+  }
+}

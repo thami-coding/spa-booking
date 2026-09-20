@@ -53,7 +53,7 @@ export const usePaymentModal = ({
             trigger(bookingId);
             showSwalSuccess("Appointment Booked");
           } else {
-            showSwalError("Booking Failed");
+            showSwalError("error", "Payment Failed!");
           }
         },
       );
