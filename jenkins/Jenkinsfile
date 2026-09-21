@@ -67,7 +67,7 @@ pipeline {
             }
         }
 
-        stage('Deploy Production') {
+        stage('Deploy Backend Production') {
             when {
                 expression {
                     return env.GIT_BRANCH == 'origin/master'
@@ -91,6 +91,39 @@ pipeline {
                     sh 'uv run fastapi deploy'
                 }
             }
+        }
+
+        stage ("Deploy Frontend Production") {
+            when {
+                expression {
+                    return env.GIT_BRANCH == 'origin/master'
+                }
+            }
+            agent {
+                docker { image 'node:24-alpine3.23' }
+            }
+            environment {
+                NETLIFY_SITE_ID = credentials('netlify-site-id')
+                NETLIFY_AUTH_TOKEN = credentials('netlify-auth-token')
+            }
+            steps {
+                checkout scm
+                dir("frontend") {
+                    sh 'corepack enable && corepack prepare pnpm@11 --activate'
+                    sh 'pnpm install netlify-cli -g'
+                    sh 'pnpm i --frozen-lockfile'
+                    sh 'pnpm build'
+                    sh '''
+                        netlify deploy \
+                        --dir build \
+                        --site "$NETLIFY_SITE_ID" \
+                        --auth "$NETLIFY_AUTH_TOKEN" \
+                        --message "Deploy from Jenkins" \
+                        --prod
+                    '''
+                }
+            }
+           
         }
     }
     post {
