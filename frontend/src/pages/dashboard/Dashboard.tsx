@@ -4,15 +4,17 @@ import { useParams } from "react-router";
 import Spinner from "../../components/spinner/Spinner";
 import { getBooking } from "../../api/bookings";
 import { format, parse, parseISO } from "date-fns";
+import ServerError from "../../components/error/ServerError";
 
 const Dashboard = () => {
   const params = useParams();
   const bookingId = params.id;
-  const { isLoading, error, data } = useSWR(
-    `/bookings/${bookingId}`,
-    getBooking,
-  );
-  // TODO: fetch services from service id from bookings
+  const {
+    isLoading,
+    error,
+    data: booking,
+  } = useSWR(`/bookings/${bookingId}`, getBooking);
+  // TODO: include services in booking response
 
   if (isLoading) {
     return (
@@ -21,10 +23,11 @@ const Dashboard = () => {
       </div>
     );
   }
+  console.log(booking);
 
-  if (error) return <div>failed to load</div>;
-  const { booking } = data;
-  const [date, time] = booking.appointment_at.split("T");
+  if (error) return <ServerError />;
+
+  const [date, time] = booking.appointmentAt.split("T");
   const bookedDate = format(parseISO(date), "EEEE, MMMM d, yyyy");
   const dateObj = parse(time, "HH:mm:ss", new Date());
   const bookedTime = format(dateObj, "h:mm a");
@@ -50,7 +53,7 @@ const Dashboard = () => {
 
           <div className={styles.item}>
             <span>Service</span>
-            <p>{booking.service}</p>
+            <p>{booking?.service || "Body Massage"}</p>
           </div>
 
           <div className={styles.item}>

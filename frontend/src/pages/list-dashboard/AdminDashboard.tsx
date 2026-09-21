@@ -35,13 +35,13 @@ const AdminDashboard = () => {
             <span>Time</span>
           </div>
 
-          {data?.bookings.map((booking) => {
+          {data?.bookings?.map((booking) => {
             const [date, time] = booking.appointmentAt.split("T");
             const bookedDate = format(parseISO(date), "EEEE, MMMM d, yyyy");
             const dateObj = parse(time, "HH:mm:ss", new Date());
             const bookedTime = format(dateObj, "h:mm a");
             const isTodayDate = isToday(bookedDate);
-
+            
             return (
               <Link
                 to={`/bookings/${booking.id}`}

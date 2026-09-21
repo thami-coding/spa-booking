@@ -9,6 +9,7 @@ import { mutate } from "swr";
 import { useLogin, useSignup } from "../../hooks/authHooks";
 import { Eye, EyeOff } from "lucide-react";
 import { formatErrors } from "../../lib/error-details";
+import AdminDemoModal from "../../components/admin-credentials/AdminDemoModal";
 
 type AuthProps = {
   mode: "login" | "signup";
@@ -49,7 +50,7 @@ const AuthPage = ({ mode }: AuthProps) => {
       const { name, confirmPassword, ...loginCredentials } = data;
       const userResponse = await login.trigger(loginCredentials);
       await mutate("/users/me", userResponse, { revalidate: false });
-      navigate("/book", { replace: true });
+      navigate("/", { replace: true });
     } else {
       await signup.trigger(data);
       navigate("/login", { replace: true });
@@ -60,9 +61,10 @@ const AuthPage = ({ mode }: AuthProps) => {
     const status = err?.response?.status;
     isServerError = status === undefined || status >= 500;
   }
-  
+
   return (
     <div className={styles.container}>
+      <AdminDemoModal  />
       <form className={styles.card} onSubmit={handleSubmit(onSubmit)}>
         {isServerError && !isLoginMode && (
           <p className={isServerError ? styles.err : styles.subtitle}>

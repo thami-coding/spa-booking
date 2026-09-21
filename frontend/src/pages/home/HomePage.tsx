@@ -5,17 +5,20 @@ import { logout } from "../../api/auth";
 import { useUser } from "../../hooks/authHooks";
 import { mutate } from "swr";
 
+type UserRole = "user" | "admin";
+
 export default function HomePage() {
-const {isLoading, data} = useUser()
-
+  const { isLoading, data } = useUser();
   const { trigger: logoutUser } = useSWRMutation("/auth/logout", logout);
-
   const handleLogout = async () => {
     await logoutUser();
     mutate("/users/me", null, { revalidate: false });
   };
 
   if (isLoading) return null;
+
+  const userRole: UserRole = data?.user.role;
+
 
   return (
     <section className={styles.hero}>
@@ -30,9 +33,16 @@ const {isLoading, data} = useUser()
             </Link>
           </>
         ) : (
-          <button onClick={handleLogout} className={styles.link}>
-            Logout
-          </button>
+          <>
+            {userRole === "admin" && (
+              <Link to="/bookings" className={styles.link}>
+                Dashboard
+              </Link>
+            )}
+            <button onClick={handleLogout} className={styles.link}>
+              Logout
+            </button>
+          </>
         )}
       </div>
       <video autoPlay muted loop playsInline>

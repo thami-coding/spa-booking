@@ -1,0 +1,86 @@
+.dialog {
+ --ink: #000;
+ --paper: #fff;
+
+ box-sizing: border-box;
+ width: calc(100% - 2rem);
+ max-width: 26rem;
+ padding: 0;
+ background: var(--paper);
+ color: var(--ink);
+ border: 2px solid var(--ink);
+ border-radius: 4px;
+ font-family: inherit;
+}
+
+.dialog::backdrop {
+ background: rgba(0, 0, 0, 0.6);
+}
+
+.content {
+ padding: 1.75rem 1.5rem;
+}
+
+.title {
+ margin: 0 0 0.5rem;
+ font-size: 1.5rem;
+ font-weight: 700;
+ line-height: 1.2;
+}
+
+.text {
+ margin: 0;
+ line-height: 1.5;
+}
+
+.details {
+ display: grid;
+ gap: 1rem;
+ margin: 1.5rem 0 0;
+}
+
+.label {
+ font-size: 0.875rem;
+ font-weight: 600;
+}
+
+.value {
+ margin: 0.25rem 0 0;
+ padding: 0.625rem 0.75rem;
+ border: 2px solid var(--ink);
+ border-radius: 4px;
+ font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+ font-size: 1rem;
+ overflow-wrap: anywhere;
+ user-select: all; /* one click selects the whole value for easy copying */
+}
+
+.close {
+ width: 100%;
+ min-height: 2.75rem;
+ margin-top: 1.5rem;
+ background: var(--ink);
+ color: var(--paper);
+ border: 2px solid var(--ink);
+ border-radius: 4px;
+ font: inherit;
+ font-weight: 600;
+ cursor: pointer;
+ transition: background-color 120ms, color 120ms;
+}
+
+.close:hover {
+ background: var(--paper);
+ color: var(--ink);
+}
+
+.close:focus-visible {
+ outline: 3px solid var(--alert);
+ outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+ .close {
+   transition: none;
+ }
+}

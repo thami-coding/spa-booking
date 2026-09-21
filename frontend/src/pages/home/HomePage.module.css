@@ -6,6 +6,12 @@
   justify-content: center;
   text-align: center;
   overflow: hidden;
+  background: linear-gradient(
+    135deg, 
+    #4a2e1b 0%,    /* Rich Brown */
+    #e8d5c4 50%,   /* Soft Beige */
+    #ffffff 100%   /* Pure White */
+  );
 }
 
 .hero video {

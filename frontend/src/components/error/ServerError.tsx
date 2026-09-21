@@ -1,4 +1,4 @@
-import styles from "./BookingError.module.css";
+import styles from "./ServerError.module.css";
 
 export default function ServerError({
   title = "Something went wrong",
