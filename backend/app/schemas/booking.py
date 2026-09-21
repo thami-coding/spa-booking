@@ -7,7 +7,11 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 
 
 class Booking(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    id: Optional[PyObjectId] = Field(
+        default=None,
+        validation_alias="_id",
+        serialization_alias="id",
+    )
     user_id: str = Field(...)
     appointment_at: datetime = Field(...)
     service_id: str = Field(...)

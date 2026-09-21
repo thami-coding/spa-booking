@@ -79,7 +79,7 @@ async def create_booking(
     "",
     response_description="List of bookings retrieved successfully",
     response_model=BookingsResponse,
-    response_model_by_alias=False,
+    response_model_by_alias=True,
 )
 async def get_bookings(
     request: Request,

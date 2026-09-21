@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, status
-from fastapi import HTTPException, Body, Request, status
+from fastapi import Body, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.models.user import User
@@ -14,7 +14,7 @@ from app.lib.errors import AppException
 router = APIRouter()
 auth_handler = AuthHandler()
 environment = BaseConfig().ENVIRONMENT
-isProduction = environment == "Production"
+is_production = environment == "production"
 
 
 @router.post(
@@ -85,8 +85,8 @@ async def login(request: Request, loginUser: UserIn = Body(...)):
         key="access_token",
         value=token,
         httponly=True,
-        secure=isProduction,
-        samesite="none" if isProduction else "lax",
+        secure=is_production,
+        samesite="none" if is_production else "lax",
     )
 
     return response
@@ -98,8 +98,8 @@ async def logout(request: Request):
     response.delete_cookie(
         key="access_token",
         httponly=True,
-        secure=isProduction,
-        samesite="none" if isProduction else "lax",
+        secure=is_production,
+        samesite="none" if is_production else "lax",
     )
 
     return response
