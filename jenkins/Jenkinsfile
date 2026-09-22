@@ -108,13 +108,13 @@ pipeline {
             environment {
                 NETLIFY_SITE_ID = credentials('netlify-site-id')
                 NETLIFY_AUTH_TOKEN = credentials('netlify-auth-token')
-                PNPM_HOME = '/root/.local/share/pnpm/bin'
+                PNPM_HOME = '/root/.local/share/pnpm'
             }
             steps {
                 checkout scm
                 dir("frontend") {
                     sh '''
-                        export PATH="$PNPM_HOME:$PATH"
+                        export PATH="$PNPM_HOME/bin:$PATH"
                         corepack enable && corepack prepare pnpm@11 --activate
                         pnpm install netlify-cli -g
                         pnpm i --frozen-lockfile
