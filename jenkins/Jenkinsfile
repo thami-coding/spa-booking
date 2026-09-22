@@ -120,11 +120,12 @@ pipeline {
                         pnpm i --frozen-lockfile
                         pnpm build
                         netlify deploy \
-                            --dir build \
+                            --dir dist \
                             --site "$NETLIFY_SITE_ID" \
                             --auth "$NETLIFY_AUTH_TOKEN" \
                             --message "Deploy from Jenkins" \
                             --prod
+                            --no-build
                     '''
                 }
             }
