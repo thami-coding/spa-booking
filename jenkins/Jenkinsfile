@@ -109,15 +109,17 @@ pipeline {
                 NETLIFY_SITE_ID = credentials('netlify-site-id')
                 NETLIFY_AUTH_TOKEN = credentials('netlify-auth-token')
                 PNPM_HOME = '/root/.local/share/pnpm'
-                PATH = "${PNPM_HOME}:${env.PATH}"
             }
             steps {
                 checkout scm
                 dir("frontend") {
-                    sh 'corepack enable && corepack prepare pnpm@11 --activate'
-                    sh 'pnpm install netlify-cli -g'
-                    sh 'pnpm i --frozen-lockfile'
-                    sh 'pnpm build'
+                    sh '''
+                        export PATH="$PNPM_HOME:$PATH"
+                        corepack enable && corepack prepare pnpm@11 --activate
+                        pnpm install netlify-cli -g
+                        pnpm i --frozen-lockfile
+                        pnpm build
+                    '''
                     sh '''
                         netlify deploy \
                         --dir build \
