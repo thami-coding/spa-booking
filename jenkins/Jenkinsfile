@@ -100,7 +100,10 @@ pipeline {
                 }
             }
             agent {
-                docker { image 'node:24-alpine3.23' }
+                docker { 
+                    image 'node:24-alpine3.23', 
+                    args '-u root' 
+                }
             }
             environment {
                 NETLIFY_SITE_ID = credentials('netlify-site-id')
